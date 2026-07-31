@@ -16,9 +16,10 @@ Kondisi saat ini:
 
 - Repository sudah terhubung ke GitHub.
 - Branch `main` baru berisi README yang sudah dipush.
-- Semua file pondasi CMS dikerjakan di branch `develop`.
+- Semua file pondasi CMS dikerjakan dan dipush di branch `develop`.
 - Payload CMS foundation sudah dibuat.
-- PostgreSQL belum dikonfigurasi untuk runtime lokal.
+- `.env` lokal development sudah dibuat dan tidak masuk Git.
+- PostgreSQL terdeteksi aktif di `localhost:5432`, tetapi credential default `postgres:postgres` ditolak.
 - CMS belum dijalankan dengan `npm run dev` atau `pnpm run dev` karena database belum siap.
 - Integrasi frontend Next.js terpisah belum dimulai.
 - Production deployment belum dimulai.
@@ -36,11 +37,12 @@ Hasil:
 - TypeScript check berhasil.
 - ESLint berhasil tanpa warning/error.
 - Build pondasi berhasil.
-- `build:strict` masih gagal sesuai desain karena `DATABASE_URI` belum tersedia.
+- `build:strict` berhasil setelah `.env` lokal tersedia.
+- `corepack pnpm run migrate` gagal karena password PostgreSQL default ditolak.
 
 ## Phase 0 - Git and Branch Safety
 
-Status: in progress.
+Status: complete.
 
 Tujuan:
 
@@ -54,9 +56,9 @@ Checklist:
 - [x] Repo terhubung ke GitHub.
 - [x] Branch lokal dipindahkan dari `main` ke `develop`.
 - [x] `.env` masuk `.gitignore`.
-- [ ] Commit pondasi awal di branch `develop`.
-- [ ] Push branch `develop` ke GitHub.
-- [ ] Verifikasi GitHub memiliki branch `main` dan `develop`.
+- [x] Commit pondasi awal di branch `develop`.
+- [x] Push branch `develop` ke GitHub.
+- [x] Verifikasi GitHub memiliki branch `main` dan `develop`.
 
 Command yang nanti dijalankan:
 
@@ -74,7 +76,7 @@ Gate selesai:
 
 ## Phase 1 - CMS Foundation Code
 
-Status: mostly complete.
+Status: complete.
 
 Tujuan:
 
@@ -132,9 +134,14 @@ Checklist tersisa:
 - [x] TypeScript check.
 - [x] Lint.
 - [x] Build pondasi tanpa database.
-- [ ] Review field names terhadap frontend existing sebelum integrasi.
-- [ ] Review apakah semua halaman existing frontend sudah punya Global/Collection yang cukup.
-- [ ] Commit dan push ke branch `develop`.
+- [x] Field CMS awal sudah terdokumentasi untuk pondasi backend.
+- [x] Halaman fixed CMS awal sudah tersedia sebagai Globals.
+- [x] Commit dan push ke branch `develop`.
+
+Catatan:
+
+- Phase 1 dinyatakan selesai untuk pondasi CMS backend.
+- Audit detail terhadap project frontend terpisah tetap dijalankan di Phase 4.5 sebelum kontrak API final dan integrasi frontend.
 
 Gate selesai:
 
@@ -144,7 +151,7 @@ Gate selesai:
 
 ## Phase 2 - Local Database and Environment
 
-Status: not started.
+Status: in progress.
 
 Phase ini adalah phase pertama yang memungkinkan CMS dijalankan lokal dengan dev server.
 
@@ -159,9 +166,10 @@ Tujuan:
 Checklist:
 
 - [ ] Copy `.env.example` menjadi `.env`.
-- [ ] Isi `DATABASE_URI`.
-- [ ] Isi `PAYLOAD_SECRET`.
-- [ ] Isi seed credential development.
+- [x] Copy `.env.example` menjadi `.env`.
+- [x] Isi `DATABASE_URI`.
+- [x] Isi `PAYLOAD_SECRET`.
+- [x] Isi seed credential development.
 - [ ] Buat database PostgreSQL lokal.
 - [ ] Jalankan migration atau auto schema setup sesuai strategi Payload.
 - [ ] Jalankan seed.
@@ -171,6 +179,14 @@ Checklist:
 - [ ] Verifikasi semua package Payload dan @payloadcms/* berada di versi yang sama.
 - [ ] Verifikasi Node.js version sesuai requirement project.
 - [ ] Verifikasi package manager yang dipakai hanya satu: pnpm.
+
+Catatan Phase 2:
+
+- `Test-NetConnection localhost:5432` berhasil, jadi port PostgreSQL aktif.
+- `psql` dan `createdb` belum tersedia di PATH.
+- `corepack pnpm run build:strict` berhasil dengan `.env` lokal.
+- `corepack pnpm run migrate` gagal dengan error `password authentication failed for user "postgres"`.
+- Lanjut Phase 2 membutuhkan credential PostgreSQL lokal yang benar atau akses tool database untuk membuat database/user.
 
 Command lokal:
 
@@ -486,11 +502,12 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Commit semua pondasi CMS di branch `develop`.
-2. Push branch `develop` ke GitHub.
-3. Siapkan `.env` lokal dan PostgreSQL.
-4. Jalankan `corepack pnpm run dev`.
-5. Login admin dan lakukan smoke test CMS.
+1. Isi `DATABASE_URI` di `.env` dengan credential PostgreSQL lokal yang benar.
+2. Pastikan database `payload_cms_villa` sudah ada, atau buat database tersebut.
+3. Jalankan `corepack pnpm run migrate`.
+4. Jalankan `corepack pnpm run seed`.
+5. Jalankan `corepack pnpm run dev`.
+6. Login admin dan lakukan smoke test CMS.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
