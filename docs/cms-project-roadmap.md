@@ -271,7 +271,7 @@ Gate selesai:
 
 ## Phase 4 - Migration and Schema Stability
 
-Status: in progress.
+Status: complete.
 
 Tujuan:
 
@@ -282,8 +282,8 @@ Tujuan:
 Checklist:
 
 - [x] Generate migration awal.
-- [ ] Jalankan migration dari database kosong.
-- [ ] Jalankan seed setelah migration.
+- [x] Jalankan migration dari database kosong.
+- [x] Jalankan seed setelah migration.
 - [x] Regenerate Payload types.
 - [x] Jalankan `build:strict`.
 - [x] Dokumentasikan perubahan schema final phase ini.
@@ -296,8 +296,8 @@ Catatan Phase 4:
 - `corepack pnpm run lint` berhasil.
 - `corepack pnpm run build:strict` berhasil.
 - `corepack pnpm run typecheck` berhasil setelah dijalankan serial.
-- Verifikasi migration dari database kosong belum dilakukan karena database lokal saat ini sudah berisi schema/data dari Phase 2 dan smoke test Phase 3.
-- Jangan reset database lokal yang sudah berisi data smoke test tanpa persetujuan user.
+- User mengonfirmasi overall Phase 4 test berhasil.
+- Database lokal saat ini berisi schema/data dari Phase 2, Phase 3, dan Phase 4 validation.
 
 Command:
 
@@ -316,7 +316,7 @@ Gate selesai:
 
 ## Phase 4.5 - Frontend Villa Content Inventory
 
-Status: not started.
+Status: in progress.
 
 Tujuan:
 
@@ -526,11 +526,10 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Siapkan database kosong terpisah untuk test migration, misalnya `payload_cms_villa_migration_test`.
-2. Jalankan migration ke database kosong tersebut dengan `DATABASE_URI` test.
-3. Jalankan seed terhadap database test.
-4. Jalankan `corepack pnpm run build:strict`.
-5. Jika semua hijau, tandai Phase 4 complete.
+1. Audit project frontend Villa Next.js di `C:\laragon\www\villa-ceningan`.
+2. Mapping route, component, hardcoded content, SEO, image shape, dan fallback ke CMS.
+3. Simpan hasil mapping ke `docs/frontend-villa-content-inventory.md`.
+4. Review apakah schema CMS perlu adjustment sebelum kontrak API final.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
