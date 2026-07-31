@@ -326,15 +326,22 @@ Tujuan:
 
 Checklist:
 
-- [ ] Audit semua route frontend Villa.
-- [ ] Audit semua component yang masih memakai hardcoded content.
-- [ ] Catat section Home, About, Rooms, Gallery, Contact, Promotion, FAQ, dan Footer.
-- [ ] Cocokkan setiap section dengan Global atau Collection Payload.
-- [ ] Catat kebutuhan image shape untuk next/image.
-- [ ] Catat kebutuhan SEO metadata setiap page.
-- [ ] Catat fallback jika CMS kosong.
-- [ ] Catat endpoint Payload yang akan dipakai setiap route.
-- [ ] Simpan hasil mapping ke docs/frontend-villa-content-inventory.md.
+- [x] Audit semua route frontend Villa.
+- [x] Audit semua component yang masih memakai hardcoded content.
+- [x] Catat section Home, About, Rooms, Gallery, Contact, Promotion, FAQ, dan Footer.
+- [x] Cocokkan setiap section dengan Global atau Collection Payload.
+- [x] Catat kebutuhan image shape untuk next/image.
+- [x] Catat kebutuhan SEO metadata setiap page.
+- [x] Catat fallback jika CMS kosong.
+- [x] Catat endpoint Payload yang akan dipakai setiap route.
+- [x] Simpan hasil mapping ke docs/frontend-villa-content-inventory.md.
+
+Catatan Phase 4.5:
+
+- Inventory disimpan di `docs/frontend-villa-content-inventory.md`.
+- Frontend repo diaudit read-only dari `C:\laragon\www\villa-ceningan`.
+- Frontend repo sedang di branch `main` dan memiliki perubahan existing di `src/components/layout/SiteFooter.tsx`; perubahan itu tidak disentuh.
+- Gaps utama sebelum Phase 5: services detail, room detail extra fields, blog, legal pages, reservation content, dan alignment route enum header CMS dengan route frontend.
 
 Gate selesai:
 
@@ -526,10 +533,10 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Audit project frontend Villa Next.js di `C:\laragon\www\villa-ceningan`.
-2. Mapping route, component, hardcoded content, SEO, image shape, dan fallback ke CMS.
-3. Simpan hasil mapping ke `docs/frontend-villa-content-inventory.md`.
-4. Review apakah schema CMS perlu adjustment sebelum kontrak API final.
+1. Review `docs/frontend-villa-content-inventory.md`.
+2. Tentukan apakah CMS perlu menambah/extend schema untuk `services`, room detail fields, legal/blog/reservation, dan route enum header.
+3. Jika schema berubah, buat migration baru dan ulang verification.
+4. Jika schema dianggap cukup, tandai Phase 4.5 complete dan mulai Phase 5 API contract.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
