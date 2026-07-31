@@ -1,0 +1,40 @@
+{
+  "name": "payload-cms-villa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "cross-env PAYLOAD_SKIP_ENV_VALIDATION=true next build",
+    "build:strict": "next build",
+    "start": "next start",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "migrate:create": "payload migrate:create",
+    "migrate": "payload migrate",
+    "seed": "payload run src/seed.ts",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.86.0",
+    "@payloadcms/next": "3.86.0",
+    "@payloadcms/richtext-lexical": "3.86.0",
+    "cross-env": "^7.0.3",
+    "next": "15.4.11",
+    "payload": "3.86.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@types/node": "^22.15.30",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "15.4.11",
+    "typescript": "5.8.3"
+  },
+  "packageManager": "pnpm@11.18.0"
+}

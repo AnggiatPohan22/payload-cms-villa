@@ -28,6 +28,7 @@ Open `http://localhost:3000/admin`.
 ```powershell
 corepack pnpm run dev
 corepack pnpm run build
+corepack pnpm run build:strict
 corepack pnpm run start
 corepack pnpm run lint
 corepack pnpm run typecheck
@@ -37,6 +38,8 @@ corepack pnpm run migrate:create
 corepack pnpm run migrate
 corepack pnpm run seed
 ```
+
+`build` skips env validation for early foundation checks. Use `build:strict` once PostgreSQL and production-like secrets are configured.
 
 ## API
 

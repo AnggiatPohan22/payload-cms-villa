@@ -1,0 +1,12 @@
+node_modules
+.next
+dist
+build
+media
+.env
+.env.local
+.env.*.local
+*.log
+payload-generated-schema.ts
+tsconfig.tsbuildinfo
+.vercel
