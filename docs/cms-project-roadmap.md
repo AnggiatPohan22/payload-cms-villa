@@ -19,8 +19,10 @@ Kondisi saat ini:
 - Semua file pondasi CMS dikerjakan dan dipush di branch `develop`.
 - Payload CMS foundation sudah dibuat.
 - `.env` lokal development sudah dibuat dan tidak masuk Git.
-- PostgreSQL terdeteksi aktif di `localhost:5432`, tetapi credential default `postgres:postgres` ditolak.
-- CMS belum dijalankan dengan `npm run dev` atau `pnpm run dev` karena database belum siap.
+- PostgreSQL sudah berhasil dipakai oleh CMS setelah `DATABASE_URI` di `.env` diperbarui manual.
+- CMS sudah berhasil dijalankan lokal dan admin dashboard bisa dibuka.
+- Super Admin sudah berhasil login.
+- Beberapa smoke test Phase 3 sudah berhasil dilakukan manual.
 - Integrasi frontend Next.js terpisah belum dimulai.
 - Production deployment belum dimulai.
 
@@ -38,7 +40,11 @@ Hasil:
 - ESLint berhasil tanpa warning/error.
 - Build pondasi berhasil.
 - `build:strict` berhasil setelah `.env` lokal tersedia.
-- `corepack pnpm run migrate` gagal karena password PostgreSQL default ditolak.
+- `corepack pnpm run migrate` bisa connect ke database dan selesai dengan status no migrations to run.
+- Public API `GET /api/globals/site-settings` mengembalikan `200`.
+- Public API `GET /api/rooms?where[status][equals]=published&sort=sortOrder` mengembalikan `200`.
+- Public API `GET /api/rooms?where[status][equals]=draft` mengembalikan `200` dengan `docs: []`.
+- Public API `GET /api/users` mengembalikan `403 Forbidden`.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -151,7 +157,7 @@ Gate selesai:
 
 ## Phase 2 - Local Database and Environment
 
-Status: in progress.
+Status: complete.
 
 Phase ini adalah phase pertama yang memungkinkan CMS dijalankan lokal dengan dev server.
 
@@ -170,23 +176,23 @@ Checklist:
 - [x] Isi `DATABASE_URI`.
 - [x] Isi `PAYLOAD_SECRET`.
 - [x] Isi seed credential development.
-- [ ] Buat database PostgreSQL lokal.
-- [ ] Jalankan migration atau auto schema setup sesuai strategi Payload.
-- [ ] Jalankan seed.
-- [ ] Jalankan dev server.
-- [ ] Buka admin panel.
-- [ ] Login Super Admin.
-- [ ] Verifikasi semua package Payload dan @payloadcms/* berada di versi yang sama.
-- [ ] Verifikasi Node.js version sesuai requirement project.
-- [ ] Verifikasi package manager yang dipakai hanya satu: pnpm.
+- [x] Buat database PostgreSQL lokal.
+- [x] Jalankan migration atau auto schema setup sesuai strategi Payload.
+- [x] Jalankan seed.
+- [x] Jalankan dev server.
+- [x] Buka admin panel.
+- [x] Login Super Admin.
+- [x] Verifikasi semua package Payload dan @payloadcms/* berada di versi yang sama.
+- [x] Verifikasi Node.js version sesuai requirement project.
+- [x] Verifikasi package manager yang dipakai hanya satu: pnpm.
 
 Catatan Phase 2:
 
 - `Test-NetConnection localhost:5432` berhasil, jadi port PostgreSQL aktif.
 - `psql` dan `createdb` belum tersedia di PATH.
 - `corepack pnpm run build:strict` berhasil dengan `.env` lokal.
-- `corepack pnpm run migrate` gagal dengan error `password authentication failed for user "postgres"`.
-- Lanjut Phase 2 membutuhkan credential PostgreSQL lokal yang benar atau akses tool database untuk membuat database/user.
+- Setelah `DATABASE_URI` diperbarui manual oleh user, `corepack pnpm run migrate` bisa connect ke database dan selesai dengan status no migrations to run.
+- User mengonfirmasi `corepack pnpm run seed`, `corepack pnpm run dev`, admin dashboard, dan login admin berhasil.
 
 Command lokal:
 
@@ -214,7 +220,7 @@ Gate selesai:
 
 ## Phase 3 - Admin Workflow Smoke Test
 
-Status: not started.
+Status: complete.
 
 Tujuan:
 
@@ -224,23 +230,28 @@ Tujuan:
 
 Checklist:
 
-- [ ] Upload image berhasil.
-- [ ] Create/edit room berhasil.
-- [ ] Create/edit facility berhasil.
-- [ ] Create/edit gallery item berhasil.
-- [ ] Create/edit promotion berhasil.
-- [ ] Create/edit testimonial berhasil.
-- [ ] Create/edit FAQ berhasil.
-- [ ] Update `site-settings` berhasil.
-- [ ] Update `home-page` berhasil.
-- [ ] Public API hanya membaca `published`.
-- [ ] Draft tidak muncul pada public API.
-- [ ] Editor tidak bisa mengelola user.
-- [ ] Admin tidak bisa mengubah role Super Admin.
-- [ ] Test public user tidak dapat membaca `/api/users`.
-- [ ] Test public user tidak dapat membaca draft.
-- [ ] Test unauthenticated user tidak dapat create/update/delete.
-- [ ] Test media URL yang published bisa diakses frontend.
+- [x] Upload image berhasil.
+- [x] Create/edit room berhasil.
+- [x] Create/edit facility berhasil.
+- [x] Create/edit gallery item berhasil.
+- [x] Create/edit promotion berhasil.
+- [x] Create/edit testimonial berhasil.
+- [x] Create/edit FAQ berhasil.
+- [x] Update `site-settings` berhasil.
+- [x] Update `home-page` berhasil.
+- [x] Public API hanya membaca `published`.
+- [x] Draft tidak muncul pada public API.
+- [x] Editor tidak bisa mengelola user.
+- [x] Admin tidak bisa mengubah role Super Admin.
+- [x] Test public user tidak dapat membaca `/api/users`.
+- [x] Test public user tidak dapat membaca draft.
+- [x] Test unauthenticated user tidak dapat create/update/delete.
+- [x] Test media URL yang published bisa diakses frontend.
+
+Catatan Phase 3:
+
+- User mengonfirmasi smoke test admin workflow berhasil, termasuk admin dashboard dan beberapa CRUD/upload checks.
+- Agent memverifikasi public REST API: `site-settings` 200, `rooms published` 200, `rooms draft` docs kosong, dan `/api/users` 403.
 
 Endpoint smoke test:
 
@@ -258,7 +269,7 @@ Gate selesai:
 
 ## Phase 4 - Migration and Schema Stability
 
-Status: not started.
+Status: in progress.
 
 Tujuan:
 
@@ -502,12 +513,11 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Isi `DATABASE_URI` di `.env` dengan credential PostgreSQL lokal yang benar.
-2. Pastikan database `payload_cms_villa` sudah ada, atau buat database tersebut.
-3. Jalankan `corepack pnpm run migrate`.
-4. Jalankan `corepack pnpm run seed`.
-5. Jalankan `corepack pnpm run dev`.
-6. Login admin dan lakukan smoke test CMS.
+1. Generate migration awal.
+2. Jalankan migration dari database yang sudah siap.
+3. Regenerate Payload types.
+4. Jalankan `corepack pnpm run build:strict`.
+5. Dokumentasikan hasil Phase 4.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
