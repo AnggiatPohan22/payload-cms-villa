@@ -45,6 +45,8 @@ Hasil:
 - Public API `GET /api/rooms?where[status][equals]=published&sort=sortOrder` mengembalikan `200`.
 - Public API `GET /api/rooms?where[status][equals]=draft` mengembalikan `200` dengan `docs: []`.
 - Public API `GET /api/users` mengembalikan `403 Forbidden`.
+- Migration awal dibuat di `src/migrations/20260731_134304_initial_schema.ts`.
+- Phase 4 masih perlu verifikasi migration dari database kosong.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -279,12 +281,23 @@ Tujuan:
 
 Checklist:
 
-- [ ] Generate migration awal.
+- [x] Generate migration awal.
 - [ ] Jalankan migration dari database kosong.
 - [ ] Jalankan seed setelah migration.
-- [ ] Regenerate Payload types.
-- [ ] Jalankan `build:strict`.
-- [ ] Dokumentasikan perubahan schema final phase ini.
+- [x] Regenerate Payload types.
+- [x] Jalankan `build:strict`.
+- [x] Dokumentasikan perubahan schema final phase ini.
+
+Catatan Phase 4:
+
+- Migration awal dibuat dengan command `corepack pnpm run migrate:create -- --name initial_schema`.
+- File migration dirapikan menjadi `src/migrations/20260731_134304_initial_schema.ts`.
+- `corepack pnpm run generate:types` berhasil.
+- `corepack pnpm run lint` berhasil.
+- `corepack pnpm run build:strict` berhasil.
+- `corepack pnpm run typecheck` berhasil setelah dijalankan serial.
+- Verifikasi migration dari database kosong belum dilakukan karena database lokal saat ini sudah berisi schema/data dari Phase 2 dan smoke test Phase 3.
+- Jangan reset database lokal yang sudah berisi data smoke test tanpa persetujuan user.
 
 Command:
 
@@ -513,11 +526,11 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Generate migration awal.
-2. Jalankan migration dari database yang sudah siap.
-3. Regenerate Payload types.
+1. Siapkan database kosong terpisah untuk test migration, misalnya `payload_cms_villa_migration_test`.
+2. Jalankan migration ke database kosong tersebut dengan `DATABASE_URI` test.
+3. Jalankan seed terhadap database test.
 4. Jalankan `corepack pnpm run build:strict`.
-5. Dokumentasikan hasil Phase 4.
+5. Jika semua hijau, tandai Phase 4 complete.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
