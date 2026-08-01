@@ -1,0 +1,928 @@
+import path from 'node:path'
+import { pathToFileURL } from 'node:url'
+import fs from 'node:fs/promises'
+import type { CollectionSlug, Payload } from 'payload'
+import { getPayload } from 'payload'
+import config from '../../payload.config'
+
+type SeedDoc = {
+  id: number | string
+}
+
+type FrontendImage = string | undefined | null
+
+type PropertyFallback = {
+  name: string
+  tagline: string
+  description: string
+  heroImage?: string
+  aboutImage?: string
+  email: string
+  phone: string
+  whatsapp: string
+  address: string
+  mapEmbedUrl?: string
+  siteUrl?: string
+  bookingMessage: string
+  highlights: string[]
+}
+
+type NavigationFallback = {
+  primaryNavigation: Array<{ href: string; label: string }>
+  footerNavigation: Array<{ links: Array<{ href: string; label: string }> }>
+}
+
+type FaqFallback = {
+  question: string
+  answer: string
+}
+
+type HomeFallback = {
+  homeFaqs: FaqFallback[]
+  homeTestimonial: {
+    author: string
+    source: string
+    quote: string
+  }
+  homeBookingBenefits: string[]
+}
+
+type RoomFallback = {
+  slug: string
+  name: string
+  category?: string
+  description: string
+  longDescription?: string
+  image?: string
+  heroImage?: string
+  gallery: Array<{ image: string; alt?: string; title?: string; caption?: string }>
+  amenities?: string[]
+  inclusions?: string[]
+  standards?: string[]
+  experiences: Array<{ title: string; description?: string; image?: string }>
+  capacity?: string
+  bed?: string
+  size?: string
+  view?: string
+  startingRate?: string
+  rateNote?: string
+  reviews?: string
+  status?: string
+  deposit?: string
+  passenger?: string
+  bestFor?: string
+}
+
+type ServiceFallback = {
+  slug: string
+  title: string
+  eyebrow?: string
+  summary?: string
+  description?: string
+  image?: string
+  detailImage?: string
+  cta?: string
+  duration?: string
+  location?: string
+  stats?: string
+  gallery: Array<{ image: string; title?: string }>
+  rituals: Array<{
+    title: string
+    category?: string
+    description?: string
+    image?: string
+    duration?: string
+    featured?: boolean
+  }>
+}
+
+type ArticleFallback = {
+  slug: string
+  title: string
+  category?: string
+  excerpt?: string
+  image?: string
+  readTime?: string
+  date: string
+  featured?: boolean
+  curatorChoice?: boolean
+}
+
+type AboutFallback = {
+  aboutPrinciples: Array<{ title: string; description?: string; image?: string }>
+}
+
+type ReservationRoomDetail = {
+  reviews?: string
+  status?: string
+  deposit?: string
+  beds?: string
+  passenger?: string
+  breakfast?: string
+  selected?: boolean
+  badge?: string
+}
+
+type ReservationFallback = {
+  reservationSearchItems: Array<Record<string, string>>
+  reservationRoomDetails: Record<string, ReservationRoomDetail>
+  reservationOverview: {
+    arrival?: string
+    departure?: string
+    items: Array<{ slug: string; roomCount?: string; passenger?: string; subtotal?: string }>
+    total?: string
+  }
+}
+
+type LegalFallback = {
+  legalPages: Array<{
+    slug: string
+    eyebrow?: string
+    title: string
+    summary?: string
+    updatedAt?: string
+    sections: Array<{ title: string; body: string[] }>
+  }>
+}
+
+const fallbackDataDir =
+  process.env.FRONTEND_FALLBACK_DATA_DIR || 'C:\\laragon\\www\\villa-ceningan\\src\\data'
+
+const frontendRoot = path.resolve(fallbackDataDir, '..', '..')
+const frontendPublicDir = path.join(frontendRoot, 'public')
+const now = new Date().toISOString()
+
+const imageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp'])
+
+const richTextFromText = (text?: string | null): Record<string, unknown> | undefined => {
+  if (!text) return undefined
+
+  return {
+    root: {
+      type: 'root',
+      format: '',
+      indent: 0,
+      version: 1,
+      children: text.split(/\n{2,}/).map((paragraph) => ({
+        type: 'paragraph',
+        direction: 'ltr' as const,
+        format: '',
+        indent: 0,
+        version: 1,
+        textFormat: 0,
+        textStyle: '',
+        children: [
+          {
+            type: 'text',
+            detail: 0,
+            format: 0,
+            mode: 'normal',
+            style: '',
+            text: paragraph.trim(),
+            version: 1,
+          },
+        ],
+      })),
+      direction: 'ltr' as const,
+    },
+  }
+}
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+const parsePrice = (value?: string) => {
+  if (!value) return undefined
+  const digits = value.replace(/[^0-9]/g, '')
+  return digits ? Number(digits) : undefined
+}
+
+const parseCapacity = (value?: string) => {
+  if (!value) return undefined
+  const match = value.match(/\d+/)
+  return match ? Number(match[0]) : undefined
+}
+
+const publicImageToFilePath = async (imagePath: FrontendImage) => {
+  if (!imagePath || !imagePath.startsWith('/')) return null
+
+  const filePath = path.join(frontendPublicDir, imagePath.replace(/^\/+/, ''))
+  const ext = path.extname(filePath).toLowerCase()
+
+  if (!imageExtensions.has(ext)) return null
+
+  try {
+    await fs.access(filePath)
+    return filePath
+  } catch {
+    return null
+  }
+}
+
+const importFrontendModule = async <T>(name: string): Promise<T> => {
+  const filePath = path.join(fallbackDataDir, `${name}.ts`)
+  return (await import(pathToFileURL(filePath).href)) as T
+}
+
+const createOrUpdateBySlug = async (
+  payload: Payload,
+  collection: CollectionSlug,
+  slug: string,
+  data: Record<string, unknown>,
+): Promise<SeedDoc> => {
+  const existing = await payload.find({
+    collection,
+    where: { slug: { equals: slug } },
+    limit: 1,
+    overrideAccess: true,
+  })
+
+  if (existing.docs[0]) {
+    return payload.update({
+      collection,
+      id: existing.docs[0].id,
+      data: data as never,
+      overrideAccess: true,
+    }) as Promise<SeedDoc>
+  }
+
+  return payload.create({ collection, data: data as never, overrideAccess: true }) as Promise<SeedDoc>
+}
+
+const createOrUpdateByTitle = async (
+  payload: Payload,
+  collection: CollectionSlug,
+  title: string,
+  data: Record<string, unknown>,
+): Promise<SeedDoc> => {
+  const existing = await payload.find({
+    collection,
+    where: { title: { equals: title } },
+    limit: 1,
+    overrideAccess: true,
+  })
+
+  if (existing.docs[0]) {
+    return payload.update({
+      collection,
+      id: existing.docs[0].id,
+      data: data as never,
+      overrideAccess: true,
+    }) as Promise<SeedDoc>
+  }
+
+  return payload.create({ collection, data: data as never, overrideAccess: true }) as Promise<SeedDoc>
+}
+
+const createOrUpdateFaq = async (
+  payload: Payload,
+  question: string,
+  category: string,
+  data: Record<string, unknown>,
+): Promise<SeedDoc> => {
+  const existing = await payload.find({
+    collection: 'faqs',
+    where: {
+      and: [{ question: { equals: question } }, { category: { equals: category } }],
+    },
+    limit: 1,
+    overrideAccess: true,
+  })
+
+  if (existing.docs[0]) {
+    return payload.update({
+      collection: 'faqs',
+      id: existing.docs[0].id,
+      data: data as never,
+      overrideAccess: true,
+    }) as Promise<SeedDoc>
+  }
+
+  return payload.create({ collection: 'faqs', data: data as never, overrideAccess: true }) as Promise<SeedDoc>
+}
+
+const createOrUpdateTestimonial = async (
+  payload: Payload,
+  guestName: string,
+  source: string,
+  data: Record<string, unknown>,
+): Promise<SeedDoc> => {
+  const existing = await payload.find({
+    collection: 'testimonials',
+    where: {
+      and: [{ guestName: { equals: guestName } }, { source: { equals: source } }],
+    },
+    limit: 1,
+    overrideAccess: true,
+  })
+
+  if (existing.docs[0]) {
+    return payload.update({
+      collection: 'testimonials',
+      id: existing.docs[0].id,
+      data: data as never,
+      overrideAccess: true,
+    }) as Promise<SeedDoc>
+  }
+
+  return payload.create({ collection: 'testimonials', data: data as never, overrideAccess: true }) as Promise<SeedDoc>
+}
+
+const ensureMedia = async (
+  payload: Payload,
+  imagePath: FrontendImage,
+  alt: string,
+  category: 'facility' | 'gallery' | 'general' | 'hero' | 'logo' | 'promotion' | 'room' = 'general',
+) => {
+  const filePath = await publicImageToFilePath(imagePath)
+
+  if (!filePath) {
+    payload.logger.warn(`Frontend fallback image not found or unsupported: ${imagePath ?? '(empty)'}`)
+    return undefined
+  }
+
+  const filename = path.basename(filePath)
+  const existing = await payload.find({
+    collection: 'media',
+    where: {
+      filename: {
+        equals: filename,
+      },
+    },
+    limit: 1,
+    overrideAccess: true,
+  })
+
+  if (existing.docs[0]) {
+    return existing.docs[0].id
+  }
+
+  const media = await payload.create({
+    collection: 'media',
+    data: {
+      alt,
+      caption: imagePath,
+      category,
+      status: 'published',
+    },
+    filePath,
+    overrideAccess: true,
+  })
+
+  return media.id
+}
+
+const galleryItems = async (
+  payload: Payload,
+  items: Array<{ image: FrontendImage; alt?: string; title?: string; caption?: string }>,
+  category: 'facility' | 'gallery' | 'general' | 'hero' | 'logo' | 'promotion' | 'room' = 'gallery',
+) => {
+  const mapped = await Promise.all(
+    items.map(async (item) => {
+      const image = await ensureMedia(payload, item.image, item.alt || item.title || 'Villa Ceningan image', category)
+      return image
+        ? {
+            image,
+            alt: item.alt || item.title || 'Villa Ceningan image',
+            caption: item.caption,
+          }
+        : null
+    }),
+  )
+
+  return mapped.filter(Boolean) as Array<{ image: number | string; alt: string; caption?: string }>
+}
+
+const labels = (items?: string[]) => items?.map((label) => ({ label })) ?? []
+
+const main = async () => {
+  const payload = await getPayload({ config })
+  console.info(`Importing frontend fallback data from ${fallbackDataDir}`)
+
+  const [
+    propertyModule,
+    navigationModule,
+    homeModule,
+    roomsModule,
+    servicesModule,
+    galleryModule,
+    facilitiesModule,
+    faqsModule,
+    blogModule,
+    aboutModule,
+    reservationModule,
+    legalModule,
+  ] = await Promise.all([
+    importFrontendModule<{ property: PropertyFallback }>('property'),
+    importFrontendModule<NavigationFallback>('navigation'),
+    importFrontendModule<HomeFallback>('home'),
+    importFrontendModule<{ rooms: RoomFallback[] }>('rooms'),
+    importFrontendModule<{ services: ServiceFallback[] }>('services'),
+    importFrontendModule<{ gallery: string[] }>('gallery'),
+    importFrontendModule<{ facilities: string[] }>('facilities'),
+    importFrontendModule<{ faqs: Array<Record<string, string>> }>('faqs'),
+    importFrontendModule<{ featuredArticle: ArticleFallback; blogArticles: ArticleFallback[]; curatorChoices: ArticleFallback[] }>('blog'),
+    importFrontendModule<AboutFallback>('about'),
+    importFrontendModule<ReservationFallback>('reservation'),
+    importFrontendModule<LegalFallback>('legal'),
+  ])
+
+  const { property } = propertyModule
+  const heroImage = await ensureMedia(payload, property.heroImage, `${property.name} hero image`, 'hero')
+  const aboutImage = await ensureMedia(payload, property.aboutImage, `${property.name} about image`, 'hero')
+
+  await payload.updateGlobal({
+    slug: 'site-settings',
+    overrideAccess: true,
+    data: {
+      siteName: property.name,
+      shortDescription: property.tagline,
+      defaultSEOTitle: property.name,
+      defaultSEODescription: property.description,
+      defaultOpenGraphImage: heroImage,
+      contactEmail: property.email,
+      phone: property.phone,
+      whatsAppNumber: property.whatsapp,
+      address: property.address,
+      googleMapsURL: property.mapEmbedUrl,
+      bookingURL: '/reservation',
+      defaultLocale: 'en',
+      timezone: 'Asia/Makassar',
+      seo: {
+        metaTitle: property.name,
+        metaDescription: property.tagline,
+        openGraphImage: heroImage,
+        canonicalURL: property.siteUrl?.startsWith('http') ? property.siteUrl : undefined,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'header',
+    overrideAccess: true,
+    data: {
+      navigationItems: navigationModule.primaryNavigation.map((item) => ({
+        label: item.label,
+        pageURL: item.href,
+        active: true,
+      })),
+      primaryCTA: {
+        label: 'Book Now',
+        url: '/reservation',
+        openInNewTab: false,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'footer',
+    overrideAccess: true,
+    data: {
+      shortDescription: property.description,
+      contactInformation: {
+        phone: property.phone,
+        email: property.email,
+        whatsApp: property.whatsapp,
+        address: property.address,
+      },
+      quickLinks: navigationModule.footerNavigation.flatMap((group) =>
+        group.links
+          .filter((link) => link.href.startsWith('/') || link.href.startsWith('http'))
+          .map((link) => ({
+            label: link.label,
+            url: link.href,
+            openInNewTab: link.href.startsWith('http'),
+          })),
+      ),
+      copyrightText: `Copyright (c) 2026 ${property.name}. All rights reserved.`,
+      termsURL: '/terms',
+      privacyURL: '/privacy',
+    } as never,
+  })
+
+  const rooms = await Promise.all(
+    roomsModule.rooms.map(async (room, index) => {
+      const featuredImage = await ensureMedia(payload, room.image, `${room.name} room preview`, 'room')
+      const roomHeroImage = await ensureMedia(payload, room.heroImage, `${room.name} hero image`, 'hero')
+      const roomGallery = await galleryItems(payload, room.gallery, 'room')
+      const experiences = await Promise.all(
+        room.experiences.map(async (experience) => ({
+          title: experience.title,
+          description: experience.description,
+          image: await ensureMedia(payload, experience.image, `${experience.title} experience image`, 'gallery'),
+        })),
+      )
+
+      return createOrUpdateBySlug(payload, 'rooms', room.slug, {
+        title: room.name,
+        slug: room.slug,
+        category: room.category,
+        shortDescription: room.description,
+        description: richTextFromText(room.longDescription),
+        featuredImage,
+        heroImage: roomHeroImage,
+        gallery: roomGallery,
+        amenities: labels(room.amenities),
+        inclusions: labels(room.inclusions),
+        standards: labels(room.standards),
+        experiences,
+        capacity: parseCapacity(room.capacity),
+        capacityLabel: room.capacity,
+        bedType: room.bed,
+        roomSize: room.size,
+        view: room.view,
+        startingPrice: parsePrice(room.startingRate),
+        currency: 'IDR',
+        rateNote: room.rateNote,
+        reviewsLabel: room.reviews,
+        availabilityLabel: room.status,
+        depositLabel: room.deposit,
+        passengerLabel: room.passenger,
+        bestFor: room.bestFor,
+        bookingURL: '/reservation',
+        featured: index < 3,
+        sortOrder: index + 1,
+        status: 'published',
+        publishedAt: now,
+        seo: {
+          metaTitle: room.name,
+          metaDescription: room.description,
+          openGraphImage: featuredImage,
+        },
+      })
+    }),
+  )
+
+  const services = await Promise.all(
+    servicesModule.services.map(async (service, index) => {
+      const featuredImage = await ensureMedia(payload, service.image, `${service.title} service preview`, 'facility')
+      const detailImage = await ensureMedia(payload, service.detailImage, `${service.title} service detail`, 'hero')
+      const serviceGallery = await galleryItems(
+        payload,
+        service.gallery.map((item) => ({
+          image: item.image,
+          title: item.title,
+          alt: `${item.title} for ${service.title}`,
+        })),
+        'gallery',
+      )
+      const rituals = await Promise.all(
+        service.rituals.map(async (ritual) => ({
+          title: ritual.title,
+          category: ritual.category,
+          description: ritual.description,
+          image: await ensureMedia(payload, ritual.image, `${ritual.title} ritual image`, 'gallery'),
+          duration: ritual.duration,
+          featured: Boolean(ritual.featured),
+        })),
+      )
+
+      return createOrUpdateBySlug(payload, 'services', service.slug, {
+        title: service.title,
+        slug: service.slug,
+        eyebrow: service.eyebrow,
+        summary: service.summary,
+        description: richTextFromText(service.description),
+        featuredImage,
+        detailImage,
+        cta: {
+          label: service.cta,
+          url: `/services/${service.slug}`,
+          openInNewTab: false,
+          variant: 'primary',
+        },
+        duration: service.duration,
+        location: service.location,
+        stats: service.stats,
+        rituals,
+        gallery: serviceGallery,
+        featured: index < 4,
+        sortOrder: index + 1,
+        status: 'published',
+        publishedAt: now,
+        seo: {
+          metaTitle: service.title,
+          metaDescription: service.summary,
+          openGraphImage: featuredImage,
+        },
+      })
+    }),
+  )
+
+  const facilities = await Promise.all(
+    facilitiesModule.facilities.map((facility, index) =>
+      createOrUpdateBySlug(payload, 'facilities', slugify(facility), {
+        title: facility,
+        slug: slugify(facility),
+        shortDescription: `${facility} available at ${property.name}.`,
+        description: richTextFromText(`${facility} available as part of the Villa Ceningan stay experience.`),
+        icon: slugify(facility),
+        featured: index < 6,
+        sortOrder: index + 1,
+        status: 'published',
+        publishedAt: now,
+        seo: {
+          metaTitle: facility,
+          metaDescription: `${facility} available at ${property.name}.`,
+        },
+      }),
+    ),
+  )
+
+  const gallery = await Promise.all(
+    galleryModule.gallery.map(async (imagePath, index) => {
+      const title = `Gallery ${String(index + 1).padStart(2, '0')}`
+      const image = await ensureMedia(payload, imagePath, `${property.name} gallery ${index + 1}`, 'gallery')
+      return createOrUpdateByTitle(payload, 'gallery', title, {
+        title,
+        image,
+        alt: `${property.name} gallery ${index + 1}`,
+        caption: imagePath,
+        category: 'resort',
+        featured: index < 6,
+        sortOrder: index + 1,
+        status: 'published',
+        publishedAt: now,
+      })
+    }),
+  )
+
+  const allArticles: ArticleFallback[] = [
+    { ...blogModule.featuredArticle, featured: true, curatorChoice: false },
+    ...blogModule.blogArticles.map((article, index) => ({ ...article, featured: index === 0, curatorChoice: false })),
+    ...blogModule.curatorChoices.map((article) => ({ ...article, featured: false, curatorChoice: true })),
+  ]
+  const seenArticleSlugs = new Set<string>()
+  const blog = await Promise.all(
+    allArticles
+      .filter((article) => {
+        if (seenArticleSlugs.has(article.slug)) return false
+        seenArticleSlugs.add(article.slug)
+        return true
+      })
+      .map(async (article, index) => {
+        const featuredImage = await ensureMedia(payload, article.image, `${article.title} article image`, 'gallery')
+        return createOrUpdateBySlug(payload, 'blog', article.slug, {
+          title: article.title,
+          slug: article.slug,
+          category: article.category,
+          excerpt: article.excerpt,
+          content: richTextFromText(article.excerpt),
+          featuredImage,
+          readTime: article.readTime,
+          articleDate: new Date(article.date).toISOString(),
+          featured: Boolean(article.featured),
+          curatorChoice: Boolean(article.curatorChoice),
+          sortOrder: index + 1,
+          status: 'published',
+          publishedAt: now,
+          seo: {
+            metaTitle: article.title,
+            metaDescription: article.excerpt,
+            openGraphImage: featuredImage,
+          },
+        })
+      }),
+  )
+
+  const faqs = await Promise.all(
+    [...homeModule.homeFaqs, ...faqsModule.faqs].map((faq, index) =>
+      createOrUpdateFaq(payload, faq.question, 'general', {
+        question: faq.question,
+        answer: faq.answer,
+        category: 'general',
+        sortOrder: index + 1,
+        status: 'published',
+        publishedAt: now,
+      }),
+    ),
+  )
+
+  await createOrUpdateTestimonial(payload, homeModule.homeTestimonial.author, homeModule.homeTestimonial.source, {
+    guestName: homeModule.homeTestimonial.author,
+    guestLocation: 'Guest',
+    rating: 5,
+    review: homeModule.homeTestimonial.quote,
+    source: homeModule.homeTestimonial.source,
+    featured: true,
+    sortOrder: 1,
+    status: 'published',
+    publishedAt: now,
+  })
+
+  await payload.updateGlobal({
+    slug: 'home-page',
+    overrideAccess: true,
+    data: {
+      hero: {
+        eyebrow: 'Welcome to Sanctuary',
+        heading: property.name,
+        description: 'A place to experience and enjoy the life',
+        backgroundImage: heroImage,
+        primaryCTA: { label: 'Explore Rooms', url: '/rooms', openInNewTab: false, variant: 'primary' },
+        secondaryCTA: { label: 'Start Reservation', url: '/reservation', openInNewTab: false, variant: 'secondary' },
+        overlayIntensity: 40,
+        active: true,
+        sortOrder: 1,
+      },
+      introduction: {
+        heading: property.tagline,
+        description: property.description,
+        image: aboutImage,
+        cta: { label: 'About Us', url: '/about-us', openInNewTab: false, variant: 'text' },
+        active: true,
+        sortOrder: 2,
+      },
+      featuredRooms: {
+        heading: 'Luxury interior',
+        description: 'Choose your island sanctuary.',
+        selectedRooms: rooms.map((room) => Number(room.id)),
+        active: true,
+        sortOrder: 3,
+      },
+      signatureExperiences: {
+        heading: 'Signature Experiences',
+        description: 'Curated moments shaped around your stay.',
+        selectedServices: services.map((service) => Number(service.id)),
+        active: true,
+        sortOrder: 4,
+      },
+      facilitiesOverview: {
+        heading: 'Facilities',
+        description: 'Practical villa comforts and island support.',
+        selectedFacilities: facilities.map((facility) => Number(facility.id)),
+        active: true,
+        sortOrder: 5,
+      },
+      galleryPreview: {
+        heading: 'Visual proof for the stay experience.',
+        description: 'Villa, rooms, and island atmosphere.',
+        selectedGalleryItems: gallery.map((item) => Number(item.id)),
+        cta: { label: 'View Gallery', url: '/gallery', openInNewTab: false, variant: 'text' },
+        active: true,
+        sortOrder: 6,
+      },
+      promotionSection: {
+        heading: 'Direct villa inquiry',
+        description: 'Seasonal promotions can be added here when ready.',
+        selectedPromotions: [],
+        active: false,
+        sortOrder: 7,
+      },
+      journalPreview: {
+        heading: 'Latest from our blog',
+        description: 'Travel notes, villa rituals, and island stories.',
+        selectedArticles: blog.slice(0, 3).map((article) => Number(article.id)),
+        cta: { label: 'View All Journal', url: '/blog', openInNewTab: false, variant: 'text' },
+        active: true,
+        sortOrder: 8,
+      },
+      finalCTA: {
+        heading: 'Plan Your Escape',
+        description: property.bookingMessage,
+        buttonLabel: 'Start Reservation',
+        buttonURL: '/reservation',
+        backgroundImage: heroImage,
+        active: true,
+        sortOrder: 9,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'about-page',
+    overrideAccess: true,
+    data: {
+      heroHeading: 'About Villa Ceningan',
+      heroDescription: property.description,
+      heroImage: aboutImage,
+      introductionHeading: property.tagline,
+      introductionContent: richTextFromText(property.description),
+      storyContent: richTextFromText(property.highlights.join('\n\n')),
+      supportingImages: await galleryItems(
+        payload,
+        aboutModule.aboutPrinciples
+          .filter((principle) => principle.image)
+          .map((principle) => ({
+            image: principle.image,
+            alt: principle.title,
+            caption: principle.description,
+          })),
+        'gallery',
+      ),
+      values: aboutModule.aboutPrinciples.map((principle) => ({
+        title: principle.title,
+        description: principle.description,
+      })),
+      finalCTA: { label: 'Start Reservation', url: '/reservation', openInNewTab: false, variant: 'primary' },
+      seo: {
+        metaTitle: 'About Villa Ceningan',
+        metaDescription: property.description,
+        openGraphImage: aboutImage,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'contact-page',
+    overrideAccess: true,
+    data: {
+      heroHeading: 'Contact Villa Ceningan',
+      heroDescription: 'Talk directly with the Villa Ceningan team for stay inquiries and island guidance.',
+      heroImage,
+      contactHeading: 'Get in Touch',
+      contactDescription: property.bookingMessage,
+      phone: property.phone,
+      email: property.email,
+      whatsApp: property.whatsapp,
+      address: property.address,
+      mapEmbedURL: property.mapEmbedUrl,
+      operationalHours: [{ label: 'Daily', hours: '08:00 - 20:00' }],
+      finalCTA: { label: 'Chat on WhatsApp', url: `https://wa.me/${property.whatsapp}`, openInNewTab: true, variant: 'primary' },
+      seo: {
+        metaTitle: 'Contact Villa Ceningan',
+        metaDescription: property.bookingMessage,
+        openGraphImage: heroImage,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'reservation-page',
+    overrideAccess: true,
+    data: {
+      heroEyebrow: 'Reservation',
+      heroHeading: 'Reservation',
+      heroDescription: property.bookingMessage,
+      heroImage,
+      searchPreview: reservationModule.reservationSearchItems,
+      bookingBenefits: labels(homeModule.homeBookingBenefits),
+      roomDetails: Object.entries(reservationModule.reservationRoomDetails).map(([slug, detail]) => ({
+        room: roomsModule.rooms.findIndex((room) => room.slug === slug) >= 0 ? Number(rooms[roomsModule.rooms.findIndex((room) => room.slug === slug)].id) : undefined,
+        reviews: detail.reviews,
+        availabilityLabel: detail.status,
+        deposit: detail.deposit,
+        beds: detail.beds,
+        passenger: detail.passenger,
+        breakfast: detail.breakfast,
+        selected: detail.selected,
+        badge: detail.badge,
+      })),
+      overview: {
+        arrival: reservationModule.reservationOverview.arrival,
+        departure: reservationModule.reservationOverview.departure,
+        items: reservationModule.reservationOverview.items.map((item) => ({
+          room: roomsModule.rooms.findIndex((room) => room.slug === item.slug) >= 0 ? Number(rooms[roomsModule.rooms.findIndex((room) => room.slug === item.slug)].id) : undefined,
+          roomCount: item.roomCount,
+          passenger: item.passenger,
+          subtotal: item.subtotal,
+        })),
+        total: reservationModule.reservationOverview.total,
+      },
+      whatsAppCTA: { label: 'Send Inquiry', url: `https://wa.me/${property.whatsapp}`, openInNewTab: true, variant: 'primary' },
+      seo: {
+        metaTitle: 'Reservation',
+        metaDescription: property.bookingMessage,
+        openGraphImage: heroImage,
+      },
+    } as never,
+  })
+
+  const legalBySlug = Object.fromEntries(
+    legalModule.legalPages.map((page) => [
+      page.slug,
+      {
+        eyebrow: page.eyebrow,
+        title: page.title,
+        summary: page.summary,
+        updatedAtLabel: page.updatedAt,
+        sections: page.sections.map((section) => ({
+          title: section.title,
+          body: section.body.map((paragraph: string) => ({ paragraph })),
+        })),
+        seo: {
+          metaTitle: page.title,
+          metaDescription: page.summary,
+        },
+      },
+    ]),
+  )
+
+  await payload.updateGlobal({
+    slug: 'legal-pages',
+    overrideAccess: true,
+    data: legalBySlug as never,
+  })
+
+  payload.logger.info(
+    `Frontend fallback seed completed: ${rooms.length} rooms, ${services.length} services, ${facilities.length} facilities, ${gallery.length} gallery items, ${blog.length} blog posts, ${faqs.length} FAQs, 1 testimonial.`,
+  )
+}
+
+await main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})

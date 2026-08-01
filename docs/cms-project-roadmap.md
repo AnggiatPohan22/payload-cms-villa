@@ -28,6 +28,7 @@ Kondisi saat ini:
 - Phase 4.5 inventory selesai dan schema gap frontend sudah ditambahkan ke CMS.
 - Migration schema lanjutan sudah dibuat, tetapi belum diaplikasikan ke database lokal karena Payload menampilkan prompt potensi data loss akibat dev-mode schema push sebelumnya.
 - Phase 5 API contract sudah didokumentasikan di `docs/frontend-api-contract.md`.
+- Phase 6B content seeding dari fallback data frontend sudah ditambahkan melalui `corepack pnpm run seed:frontend`.
 
 Verifikasi terakhir:
 
@@ -51,6 +52,7 @@ Hasil:
 - Migration awal dibuat di `src/migrations/20260731_134304_initial_schema.ts`.
 - Migration lanjutan dibuat di `src/migrations/20260801_011752_add_frontend_content_schema.ts`.
 - Verifikasi apply migration lanjutan harus dilakukan hanya pada database kosong/test atau setelah user menyetujui risiko data loss.
+- Seed Phase 6B berhasil mengisi 3 rooms, 4 services, 8 facilities, 6 gallery items, 7 blog posts, 8 FAQs, dan 1 testimonial dari frontend fallback data.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -420,9 +422,48 @@ Gate selesai:
 - Tidak ada field penting yang miss untuk halaman existing.
 - Frontend bisa mulai fetch data CMS lokal pada Phase 6 setelah helper dibuat di repo frontend terpisah.
 
+## Phase 6B - CMS Content Seeding From Frontend Fallback Data
+
+Status: complete.
+
+Tujuan:
+
+- Mengisi CMS lokal dengan konten representatif dari fallback data frontend Villa.
+- Menjaga import aman, idempotent, dan hanya berjalan di repo CMS.
+- Memberi data nyata untuk smoke test REST API sebelum integrasi frontend dilanjutkan.
+
+Checklist:
+
+- [x] Baca fallback data frontend dari `C:\laragon\www\villa-ceningan\src\data`.
+- [x] Buat script seed/import tanpa dependency baru.
+- [x] Import media dari frontend `public` ke Payload `media`.
+- [x] Reuse media berdasarkan `filename`.
+- [x] Upsert Collections berdasarkan `slug`, `title`, atau key unik lain.
+- [x] Update Globals melalui Payload Local API.
+- [x] Set imported collection content sebagai `published`.
+- [x] Tambahkan dokumentasi Phase 6B.
+- [x] Jalankan `corepack pnpm run typecheck`.
+- [x] Jalankan `corepack pnpm run seed:frontend`.
+- [x] Jalankan `corepack pnpm run lint`.
+- [x] Jalankan `corepack pnpm run build:strict`.
+- [x] Smoke test public REST API setelah seed.
+
+Command:
+
+```powershell
+corepack pnpm run seed:frontend
+```
+
+Gate selesai:
+
+- Seed bisa dijalankan ulang tanpa duplikasi besar.
+- Public API mengembalikan published CMS content yang cukup untuk Phase 6.
+- Runtime media upload tidak ikut commit.
+- Dokumentasi mapping tersimpan di `docs/phase-6b-content-seeding-report.md`.
+
 ## Phase 6 - Frontend Sync and Integration
 
-Status: next.
+Status: ready after Phase 6B verification.
 
 Tujuan:
 
@@ -562,7 +603,7 @@ Step berikutnya yang paling aman:
 
 1. Review `docs/frontend-api-contract.md`.
 2. Jalankan CMS lokal bila belum berjalan.
-3. Smoke test endpoint Phase 5 dari CMS lokal.
+3. Smoke test endpoint Phase 5 dan Phase 6B dari CMS lokal.
 4. Jika endpoint aman, mulai Phase 6 di repo frontend terpisah dengan helper fetch CMS dan `NEXT_PUBLIC_CMS_URL`.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.

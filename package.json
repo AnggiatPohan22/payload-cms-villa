@@ -13,6 +13,7 @@
     "migrate:create": "payload migrate:create",
     "migrate": "payload migrate",
     "seed": "payload run src/seed.ts",
+    "seed:frontend": "payload run src/scripts/seedFrontendFallback.ts",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

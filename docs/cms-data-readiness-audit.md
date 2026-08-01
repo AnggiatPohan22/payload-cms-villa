@@ -3,6 +3,24 @@
 Audit date: 1 Agustus 2026  
 Scope: lightweight CMS content readiness check after Payload admin layout fix.
 
+## Phase 6B Update
+
+This audit has been superseded by Phase 6B content seeding from frontend fallback data.
+
+After running `corepack pnpm run seed:frontend`, the local CMS seed/import produced:
+
+| Content area | Seeded result |
+| --- | --- |
+| `rooms` | 3 published docs |
+| `services` | 4 published docs |
+| `facilities` | 8 published docs |
+| `gallery` | 6 published docs |
+| `blog` | 7 published docs |
+| `faqs` | 8 published docs |
+| `testimonials` | 1 published doc |
+
+The original snapshot below is kept as historical context from before Phase 6B.
+
 ## Summary
 
 The CMS schema is ready for the Phase 6 frontend integration contract, but the current local CMS content is not yet fully representative of the Villa frontend fallback data.
