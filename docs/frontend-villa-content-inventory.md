@@ -473,10 +473,19 @@ Completed in this inventory:
 - Identified gaps before Phase 5 API contract.
 - Documented recommended first integration endpoints.
 - Documented image, SEO, and fallback notes.
+- Added CMS schema coverage for the identified frontend gaps.
 
 Open before Phase 5:
 
-- Decide whether to extend CMS schema for services.
-- Decide whether to extend room detail fields.
-- Decide whether legal/blog/reservation should remain static for first integration.
-- Decide whether to align CMS header route enum to frontend routes now.
+- Finalize endpoint contract and response shape in Phase 5.
+- Verify the new migration on a clean/test database target, or with explicit approval for local data-loss risk.
+- Decide exact frontend fallback behavior if `services`, `blog`, or legal content is empty.
+
+Schema update after inventory:
+
+- Added `services` collection for `/services` and `/services/[slug]`.
+- Added richer room detail fields so `/villa/[slug]` can move away from hardcoded detail data.
+- Added `blog` collection for journal listing/detail content.
+- Added `reservation-page` global for reservation page content while keeping booking WhatsApp-first.
+- Added `legal-pages` global for terms, privacy, and cookies.
+- Aligned header route options with frontend routes while preserving previous CMS route values.

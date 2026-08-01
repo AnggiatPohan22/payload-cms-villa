@@ -6,9 +6,14 @@ import { linkFields } from '@/fields/link'
 const allowedPages = [
   { label: 'Home', value: '/' },
   { label: 'About', value: '/about' },
+  { label: 'About Us', value: '/about-us' },
+  { label: 'Villa', value: '/villa' },
   { label: 'Rooms', value: '/rooms' },
+  { label: 'Reservation', value: '/reservation' },
   { label: 'Facilities', value: '/facilities' },
+  { label: 'Services', value: '/services' },
   { label: 'Gallery', value: '/gallery' },
+  { label: 'Blog', value: '/blog' },
   { label: 'Promotions', value: '/promotions' },
   { label: 'Contact', value: '/contact' },
 ]

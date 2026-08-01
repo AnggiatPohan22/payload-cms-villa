@@ -5,6 +5,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 import { buildConfig } from 'payload'
 import { AboutPage } from '@/globals/AboutPage'
+import { Blog } from '@/collections/Blog'
 import { ContactPage } from '@/globals/ContactPage'
 import { FAQs } from '@/collections/FAQs'
 import { Facilities } from '@/collections/Facilities'
@@ -12,9 +13,12 @@ import { Footer } from '@/globals/Footer'
 import { Gallery } from '@/collections/Gallery'
 import { Header } from '@/globals/Header'
 import { HomePage } from '@/globals/HomePage'
+import { LegalPages } from '@/globals/LegalPages'
 import { Media } from '@/collections/Media'
 import { Promotions } from '@/collections/Promotions'
+import { ReservationPage } from '@/globals/ReservationPage'
 import { Rooms } from '@/collections/Rooms'
+import { Services } from '@/collections/Services'
 import { SiteSettings } from '@/globals/SiteSettings'
 import { Testimonials } from '@/collections/Testimonials'
 import { Users } from '@/collections/Users'
@@ -42,8 +46,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Rooms, Facilities, Gallery, Promotions, Testimonials, FAQs],
-  globals: [SiteSettings, Header, Footer, HomePage, AboutPage, ContactPage],
+  collections: [Users, Media, Rooms, Services, Facilities, Gallery, Promotions, Blog, Testimonials, FAQs],
+  globals: [SiteSettings, Header, Footer, HomePage, AboutPage, ContactPage, ReservationPage, LegalPages],
   cors: {
     origins: getAllowedOrigins(),
   },

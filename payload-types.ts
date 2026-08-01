@@ -70,9 +70,11 @@ export interface Config {
     users: User;
     media: Media;
     rooms: Room;
+    services: Service;
     facilities: Facility;
     gallery: Gallery;
     promotions: Promotion;
+    blog: Blog;
     testimonials: Testimonial;
     faqs: Faq;
     'payload-kv': PayloadKv;
@@ -85,9 +87,11 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     rooms: RoomsSelect<false> | RoomsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
     facilities: FacilitiesSelect<false> | FacilitiesSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -106,6 +110,8 @@ export interface Config {
     'home-page': HomePage;
     'about-page': AboutPage;
     'contact-page': ContactPage;
+    'reservation-page': ReservationPage;
+    'legal-pages': LegalPage;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -114,6 +120,8 @@ export interface Config {
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'reservation-page': ReservationPageSelect<false> | ReservationPageSelect<true>;
+    'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
   };
   locale: null;
   widgets: {
@@ -227,6 +235,7 @@ export interface Room {
   id: number;
   title: string;
   slug: string;
+  category?: string | null;
   shortDescription: string;
   description?: {
     root: {
@@ -244,6 +253,7 @@ export interface Room {
     [k: string]: unknown;
   } | null;
   featuredImage: number | Media;
+  heroImage?: (number | null) | Media;
   gallery?:
     | {
         image: number | Media;
@@ -258,13 +268,118 @@ export interface Room {
         id?: string | null;
       }[]
     | null;
+  inclusions?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  standards?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  experiences?:
+    | {
+        title: string;
+        description?: string | null;
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
   capacity?: number | null;
+  capacityLabel?: string | null;
   bedType?: string | null;
   roomSize?: string | null;
   view?: string | null;
   startingPrice?: number | null;
   currency?: string | null;
+  rateNote?: string | null;
+  reviewsLabel?: string | null;
+  availabilityLabel?: string | null;
+  depositLabel?: string | null;
+  passengerLabel?: string | null;
+  bestFor?: string | null;
   bookingURL?: string | null;
+  featured?: boolean | null;
+  sortOrder?: number | null;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
+  updatedBy?: (number | null) | User;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  title: string;
+  slug: string;
+  eyebrow?: string | null;
+  summary: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage: number | Media;
+  detailImage?: (number | null) | Media;
+  cta?: {
+    label?: string | null;
+    url?: string | null;
+    openInNewTab?: boolean | null;
+    variant?: ('primary' | 'secondary' | 'text') | null;
+  };
+  duration?: string | null;
+  location?: string | null;
+  stats?:
+    | {
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  rituals?:
+    | {
+        title: string;
+        category?: string | null;
+        description?: string | null;
+        image?: (number | null) | Media;
+        duration?: string | null;
+        featured?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  gallery?:
+    | {
+        image: number | Media;
+        alt: string;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   featured?: boolean | null;
   sortOrder?: number | null;
   status: 'draft' | 'published';
@@ -402,6 +517,52 @@ export interface Promotion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage: number | Media;
+  readTime?: string | null;
+  articleDate?: string | null;
+  featured?: boolean | null;
+  curatorChoice?: boolean | null;
+  sortOrder?: number | null;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
+  updatedBy?: (number | null) | User;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials".
  */
 export interface Testimonial {
@@ -473,6 +634,10 @@ export interface PayloadLockedDocument {
         value: number | Room;
       } | null)
     | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
         relationTo: 'facilities';
         value: number | Facility;
       } | null)
@@ -483,6 +648,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'promotions';
         value: number | Promotion;
+      } | null)
+    | ({
+        relationTo: 'blog';
+        value: number | Blog;
       } | null)
     | ({
         relationTo: 'testimonials';
@@ -621,9 +790,11 @@ export interface MediaSelect<T extends boolean = true> {
 export interface RoomsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  category?: T;
   shortDescription?: T;
   description?: T;
   featuredImage?: T;
+  heroImage?: T;
   gallery?:
     | T
     | {
@@ -638,13 +809,107 @@ export interface RoomsSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  inclusions?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  standards?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  experiences?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        id?: T;
+      };
   capacity?: T;
+  capacityLabel?: T;
   bedType?: T;
   roomSize?: T;
   view?: T;
   startingPrice?: T;
   currency?: T;
+  rateNote?: T;
+  reviewsLabel?: T;
+  availabilityLabel?: T;
+  depositLabel?: T;
+  passengerLabel?: T;
+  bestFor?: T;
   bookingURL?: T;
+  featured?: T;
+  sortOrder?: T;
+  status?: T;
+  publishedAt?: T;
+  updatedBy?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  eyebrow?: T;
+  summary?: T;
+  description?: T;
+  featuredImage?: T;
+  detailImage?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        variant?: T;
+      };
+  duration?: T;
+  location?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  rituals?:
+    | T
+    | {
+        title?: T;
+        category?: T;
+        description?: T;
+        image?: T;
+        duration?: T;
+        featured?: T;
+        id?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
   featured?: T;
   sortOrder?: T;
   status?: T;
@@ -737,6 +1002,39 @@ export interface PromotionsSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   featured?: T;
+  sortOrder?: T;
+  status?: T;
+  publishedAt?: T;
+  updatedBy?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  excerpt?: T;
+  content?: T;
+  featuredImage?: T;
+  readTime?: T;
+  articleDate?: T;
+  featured?: T;
+  curatorChoice?: T;
   sortOrder?: T;
   status?: T;
   publishedAt?: T;
@@ -876,7 +1174,19 @@ export interface Header {
   navigationItems?:
     | {
         label: string;
-        pageURL: '/' | '/about' | '/rooms' | '/facilities' | '/gallery' | '/promotions' | '/contact';
+        pageURL:
+          | '/'
+          | '/about'
+          | '/about-us'
+          | '/villa'
+          | '/rooms'
+          | '/reservation'
+          | '/facilities'
+          | '/services'
+          | '/gallery'
+          | '/blog'
+          | '/promotions'
+          | '/contact';
         active?: boolean | null;
         id?: string | null;
       }[]
@@ -973,6 +1283,13 @@ export interface HomePage {
     active?: boolean | null;
     sortOrder?: number | null;
   };
+  signatureExperiences?: {
+    heading?: string | null;
+    description?: string | null;
+    selectedServices?: (number | Service)[] | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
   facilitiesOverview?: {
     heading?: string | null;
     description?: string | null;
@@ -997,6 +1314,19 @@ export interface HomePage {
     heading?: string | null;
     description?: string | null;
     selectedPromotions?: (number | Promotion)[] | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  journalPreview?: {
+    heading?: string | null;
+    description?: string | null;
+    selectedArticles?: (number | Blog)[] | null;
+    cta?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+      variant?: ('primary' | 'secondary' | 'text') | null;
+    };
     active?: boolean | null;
     sortOrder?: number | null;
   };
@@ -1122,6 +1452,164 @@ export interface ContactPage {
     canonicalURL?: string | null;
     noIndex?: boolean | null;
     noFollow?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservation-page".
+ */
+export interface ReservationPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroHeading: string;
+  heroDescription?: string | null;
+  heroImage?: (number | null) | Media;
+  searchPreview?:
+    | {
+        label: string;
+        value: string;
+        detail?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  bookingBenefits?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  roomDetails?:
+    | {
+        room: number | Room;
+        reviews?: string | null;
+        availabilityLabel?: string | null;
+        deposit?: string | null;
+        beds?: string | null;
+        passenger?: string | null;
+        breakfast?: string | null;
+        selected?: boolean | null;
+        badge?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  overview?: {
+    arrival?: string | null;
+    departure?: string | null;
+    items?:
+      | {
+          room?: (number | null) | Room;
+          roomCount?: string | null;
+          passenger?: string | null;
+          subtotal?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    total?: string | null;
+  };
+  whatsAppCTA?: {
+    label?: string | null;
+    url?: string | null;
+    openInNewTab?: boolean | null;
+    variant?: ('primary' | 'secondary' | 'text') | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages".
+ */
+export interface LegalPage {
+  id: number;
+  terms: {
+    eyebrow?: string | null;
+    title: string;
+    summary?: string | null;
+    updatedAtLabel?: string | null;
+    sections?:
+      | {
+          title: string;
+          body?:
+            | {
+                paragraph: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      openGraphImage?: (number | null) | Media;
+      canonicalURL?: string | null;
+      noIndex?: boolean | null;
+      noFollow?: boolean | null;
+    };
+  };
+  privacy: {
+    eyebrow?: string | null;
+    title: string;
+    summary?: string | null;
+    updatedAtLabel?: string | null;
+    sections?:
+      | {
+          title: string;
+          body?:
+            | {
+                paragraph: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      openGraphImage?: (number | null) | Media;
+      canonicalURL?: string | null;
+      noIndex?: boolean | null;
+      noFollow?: boolean | null;
+    };
+  };
+  cookies: {
+    eyebrow?: string | null;
+    title: string;
+    summary?: string | null;
+    updatedAtLabel?: string | null;
+    sections?:
+      | {
+          title: string;
+          body?:
+            | {
+                paragraph: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      openGraphImage?: (number | null) | Media;
+      canonicalURL?: string | null;
+      noIndex?: boolean | null;
+      noFollow?: boolean | null;
+    };
   };
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -1288,6 +1776,15 @@ export interface HomePageSelect<T extends boolean = true> {
         active?: T;
         sortOrder?: T;
       };
+  signatureExperiences?:
+    | T
+    | {
+        heading?: T;
+        description?: T;
+        selectedServices?: T;
+        active?: T;
+        sortOrder?: T;
+      };
   facilitiesOverview?:
     | T
     | {
@@ -1320,6 +1817,23 @@ export interface HomePageSelect<T extends boolean = true> {
         heading?: T;
         description?: T;
         selectedPromotions?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  journalPreview?:
+    | T
+    | {
+        heading?: T;
+        description?: T;
+        selectedArticles?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+              variant?: T;
+            };
         active?: T;
         sortOrder?: T;
       };
@@ -1427,6 +1941,182 @@ export interface ContactPageSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
         noFollow?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservation-page_select".
+ */
+export interface ReservationPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroHeading?: T;
+  heroDescription?: T;
+  heroImage?: T;
+  searchPreview?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        detail?: T;
+        id?: T;
+      };
+  bookingBenefits?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  roomDetails?:
+    | T
+    | {
+        room?: T;
+        reviews?: T;
+        availabilityLabel?: T;
+        deposit?: T;
+        beds?: T;
+        passenger?: T;
+        breakfast?: T;
+        selected?: T;
+        badge?: T;
+        id?: T;
+      };
+  overview?:
+    | T
+    | {
+        arrival?: T;
+        departure?: T;
+        items?:
+          | T
+          | {
+              room?: T;
+              roomCount?: T;
+              passenger?: T;
+              subtotal?: T;
+              id?: T;
+            };
+        total?: T;
+      };
+  whatsAppCTA?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        variant?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-pages_select".
+ */
+export interface LegalPagesSelect<T extends boolean = true> {
+  terms?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        summary?: T;
+        updatedAtLabel?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?:
+                | T
+                | {
+                    paragraph?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              openGraphImage?: T;
+              canonicalURL?: T;
+              noIndex?: T;
+              noFollow?: T;
+            };
+      };
+  privacy?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        summary?: T;
+        updatedAtLabel?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?:
+                | T
+                | {
+                    paragraph?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              openGraphImage?: T;
+              canonicalURL?: T;
+              noIndex?: T;
+              noFollow?: T;
+            };
+      };
+  cookies?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        summary?: T;
+        updatedAtLabel?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?:
+                | T
+                | {
+                    paragraph?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              openGraphImage?: T;
+              canonicalURL?: T;
+              noIndex?: T;
+              noFollow?: T;
+            };
       };
   _status?: T;
   updatedAt?: T;

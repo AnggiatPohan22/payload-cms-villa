@@ -18,7 +18,7 @@ CMS ini hanya bertugas sebagai backend/admin untuk:
 
 - Mengelola konten website Villa / Resort.
 - Mengelola media dan gallery.
-- Mengelola rooms, facilities, promotions, testimonials, dan FAQs.
+- Mengelola rooms, services, facilities, promotions, blog, testimonials, dan FAQs.
 - Mengelola fixed page content melalui Payload Globals.
 - Menyediakan Payload REST API untuk frontend Villa Next.js yang berada di project terpisah.
 
@@ -169,9 +169,11 @@ Current Collections:
 - `users`
 - `media`
 - `rooms`
+- `services`
 - `facilities`
 - `gallery`
 - `promotions`
+- `blog`
 - `testimonials`
 - `faqs`
 
@@ -183,6 +185,8 @@ Current Globals:
 - `home-page`
 - `about-page`
 - `contact-page`
+- `reservation-page`
+- `legal-pages`
 
 Rules:
 
@@ -248,9 +252,13 @@ Important endpoints:
 ```text
 GET /api/rooms?where[status][equals]=published&sort=sortOrder
 GET /api/rooms?where[slug][equals]=room-slug&where[status][equals]=published
+GET /api/services?where[status][equals]=published&sort=sortOrder
+GET /api/services?where[slug][equals]=service-slug&where[status][equals]=published
 GET /api/facilities?where[status][equals]=published&sort=sortOrder
 GET /api/gallery?where[status][equals]=published&sort=sortOrder
 GET /api/promotions?where[status][equals]=published&sort=sortOrder
+GET /api/blog?where[status][equals]=published&sort=sortOrder
+GET /api/blog?where[slug][equals]=article-slug&where[status][equals]=published
 GET /api/testimonials?where[status][equals]=published&sort=sortOrder
 GET /api/faqs?where[status][equals]=published&sort=sortOrder
 GET /api/globals/site-settings
@@ -259,6 +267,8 @@ GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/globals/about-page
 GET /api/globals/contact-page
+GET /api/globals/reservation-page
+GET /api/globals/legal-pages
 ```
 
 Rules:
@@ -415,16 +425,15 @@ Rules:
 As of the current roadmap:
 
 - Active branch should be `develop`.
-- Phase 0 is in progress.
-- Phase 1 is mostly complete.
-- Phase 2 has not started.
-- CMS can be viewed via dev server only after Phase 2 setup.
-- Frontend integration must wait until local CMS runtime, admin login, media upload, and published-only public API are verified.
+- Phase 0 through Phase 4 are complete.
+- Phase 4.5 frontend inventory is complete and schema gaps are addressed.
+- Phase 5 API contract is next.
+- CMS can be viewed via dev server because Phase 2 setup is complete.
+- Frontend integration must wait until Phase 5 API contract is complete.
 
 Next safe step:
 
-1. Commit all CMS foundation files on `develop`.
-2. Push `develop` to GitHub.
-3. Prepare `.env` and PostgreSQL.
-4. Run CMS locally.
-5. Smoke test admin, upload, roles, and public REST API.
+1. Review Phase 4.5 schema additions.
+2. Verify the new migration on a clean/test database or with explicit approval for local data-loss risk.
+3. Build the Phase 5 API contract docs.
+4. Only then begin frontend sync in the separate frontend repository.

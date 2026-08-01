@@ -7,9 +7,13 @@ Payload serves REST endpoints under `/api`.
 ```text
 GET /api/rooms?where[status][equals]=published&sort=sortOrder
 GET /api/rooms?where[slug][equals]=ocean-view-villa&where[status][equals]=published
+GET /api/services?where[status][equals]=published&sort=sortOrder
+GET /api/services?where[slug][equals]=poolside-reset&where[status][equals]=published
 GET /api/facilities?where[status][equals]=published&sort=sortOrder
 GET /api/gallery?where[status][equals]=published&sort=sortOrder
 GET /api/promotions?where[status][equals]=published&sort=sortOrder
+GET /api/blog?where[status][equals]=published&sort=sortOrder
+GET /api/blog?where[slug][equals]=art-of-stillness&where[status][equals]=published
 GET /api/testimonials?where[status][equals]=published&sort=sortOrder
 GET /api/faqs?where[status][equals]=published&sort=sortOrder
 ```
@@ -23,6 +27,23 @@ GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/globals/about-page
 GET /api/globals/contact-page
+GET /api/globals/reservation-page
+GET /api/globals/legal-pages
+```
+
+## Frontend Route Mapping
+
+```text
+/                         -> site-settings, header, footer, home-page, rooms, services, blog, testimonials, faqs
+/about-us                 -> about-page, site-settings, header, footer
+/villa                    -> rooms
+/villa/[slug]             -> rooms by slug
+/services                 -> services
+/services/[slug]          -> services by slug
+/reservation              -> reservation-page, rooms
+/blog                     -> blog
+/blog/[slug]              -> blog by slug
+/terms, /privacy, /cookies -> legal-pages
 ```
 
 ## Example Response Shape

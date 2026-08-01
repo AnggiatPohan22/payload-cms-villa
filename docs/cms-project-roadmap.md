@@ -4,7 +4,7 @@ Dokumen ini menjadi landasan phase untuk backend headless CMS Villa Resort berba
 
 ## Current Status
 
-Tanggal audit: 31 Juli 2026.
+Tanggal audit: 1 Agustus 2026.
 
 Branch kerja saat ini:
 
@@ -25,6 +25,8 @@ Kondisi saat ini:
 - Beberapa smoke test Phase 3 sudah berhasil dilakukan manual.
 - Integrasi frontend Next.js terpisah belum dimulai.
 - Production deployment belum dimulai.
+- Phase 4.5 inventory selesai dan schema gap frontend sudah ditambahkan ke CMS.
+- Migration schema lanjutan sudah dibuat, tetapi belum diaplikasikan ke database lokal karena Payload menampilkan prompt potensi data loss akibat dev-mode schema push sebelumnya.
 
 Verifikasi terakhir:
 
@@ -46,7 +48,8 @@ Hasil:
 - Public API `GET /api/rooms?where[status][equals]=draft` mengembalikan `200` dengan `docs: []`.
 - Public API `GET /api/users` mengembalikan `403 Forbidden`.
 - Migration awal dibuat di `src/migrations/20260731_134304_initial_schema.ts`.
-- Phase 4 masih perlu verifikasi migration dari database kosong.
+- Migration lanjutan dibuat di `src/migrations/20260801_011752_add_frontend_content_schema.ts`.
+- Verifikasi apply migration lanjutan harus dilakukan hanya pada database kosong/test atau setelah user menyetujui risiko data loss.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -98,9 +101,11 @@ Yang sudah dibuat:
   - `users`
   - `media`
   - `rooms`
+  - `services`
   - `facilities`
   - `gallery`
   - `promotions`
+  - `blog`
   - `testimonials`
   - `faqs`
 - Globals:
@@ -110,6 +115,8 @@ Yang sudah dibuat:
   - `home-page`
   - `about-page`
   - `contact-page`
+  - `reservation-page`
+  - `legal-pages`
 - Reusable fields:
   - SEO
   - CTA
@@ -316,7 +323,7 @@ Gate selesai:
 
 ## Phase 4.5 - Frontend Villa Content Inventory
 
-Status: in progress.
+Status: complete.
 
 Tujuan:
 
@@ -335,23 +342,28 @@ Checklist:
 - [x] Catat fallback jika CMS kosong.
 - [x] Catat endpoint Payload yang akan dipakai setiap route.
 - [x] Simpan hasil mapping ke docs/frontend-villa-content-inventory.md.
+- [x] Tambahkan schema untuk gaps utama: services, room detail fields, blog, legal pages, reservation content, dan route enum header.
+- [x] Generate Payload types setelah schema update.
+- [x] Buat migration lanjutan untuk schema update.
 
 Catatan Phase 4.5:
 
 - Inventory disimpan di `docs/frontend-villa-content-inventory.md`.
 - Frontend repo diaudit read-only dari `C:\laragon\www\villa-ceningan`.
 - Frontend repo sedang di branch `main` dan memiliki perubahan existing di `src/components/layout/SiteFooter.tsx`; perubahan itu tidak disentuh.
-- Gaps utama sebelum Phase 5: services detail, room detail extra fields, blog, legal pages, reservation content, dan alignment route enum header CMS dengan route frontend.
+- Gaps utama sebelum Phase 5 sudah ditangani di schema CMS: `services`, room detail fields, `blog`, `legal-pages`, `reservation-page`, dan alignment route enum header CMS dengan route frontend.
+- Migration lanjutan dibuat sebagai `src/migrations/20260801_011752_add_frontend_content_schema.ts`.
+- `corepack pnpm run migrate` belum dilanjutkan karena Payload menampilkan prompt potensi data loss pada database lokal yang sebelumnya pernah terkena dev-mode schema push.
 
 Gate selesai:
 
 - Semua section frontend existing sudah punya mapping CMS.
 - Tidak ada field critical yang miss sebelum frontend integration.
-- Schema CMS tidak diubah lagi tanpa migration dan update API contract.
+- Schema gap dari inventory sudah dibuat dengan migration dan dokumentasi.
 
 ## Phase 5 - Frontend API Contract
 
-Status: not started.
+Status: next.
 
 Tujuan:
 
@@ -382,9 +394,13 @@ GET /api/globals/header
 GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/rooms?where[status][equals]=published&sort=sortOrder
+GET /api/services?where[status][equals]=published&sort=sortOrder
 GET /api/facilities?where[status][equals]=published&sort=sortOrder
 GET /api/gallery?where[status][equals]=published&sort=sortOrder
 GET /api/promotions?where[status][equals]=published&sort=sortOrder
+GET /api/blog?where[status][equals]=published&sort=sortOrder
+GET /api/globals/reservation-page
+GET /api/globals/legal-pages
 ```
 
 Gate selesai:
@@ -533,10 +549,10 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Review `docs/frontend-villa-content-inventory.md`.
-2. Tentukan apakah CMS perlu menambah/extend schema untuk `services`, room detail fields, legal/blog/reservation, dan route enum header.
-3. Jika schema berubah, buat migration baru dan ulang verification.
-4. Jika schema dianggap cukup, tandai Phase 4.5 complete dan mulai Phase 5 API contract.
+1. Review dan approve schema tambahan Phase 4.5.
+2. Verifikasi migration lanjutan pada database kosong/test, atau setujui risiko data loss jika memakai database lokal yang sudah pernah berubah lewat dev mode.
+3. Mulai Phase 5 API contract untuk menentukan endpoint, `depth`, fallback, sorting, cache/revalidate, dan response shape final.
+4. Jangan mulai edit frontend sampai Phase 5 selesai.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 

@@ -48,6 +48,11 @@ export const HomePage: GlobalConfig = {
       { name: 'description', type: 'textarea' },
       { name: 'selectedRooms', type: 'relationship', relationTo: 'rooms', hasMany: true },
     ]),
+    section('signatureExperiences', [
+      { name: 'heading', type: 'text', maxLength: 140 },
+      { name: 'description', type: 'textarea' },
+      { name: 'selectedServices', type: 'relationship', relationTo: 'services', hasMany: true },
+    ]),
     section('facilitiesOverview', [
       { name: 'heading', type: 'text', maxLength: 140 },
       { name: 'description', type: 'textarea' },
@@ -63,6 +68,12 @@ export const HomePage: GlobalConfig = {
       { name: 'heading', type: 'text', maxLength: 140 },
       { name: 'description', type: 'textarea' },
       { name: 'selectedPromotions', type: 'relationship', relationTo: 'promotions', hasMany: true },
+    ]),
+    section('journalPreview', [
+      { name: 'heading', type: 'text', maxLength: 140 },
+      { name: 'description', type: 'textarea' },
+      { name: 'selectedArticles', type: 'relationship', relationTo: 'blog', hasMany: true },
+      ctaFields(),
     ]),
     section('finalCTA', [
       { name: 'heading', type: 'text', maxLength: 140 },
