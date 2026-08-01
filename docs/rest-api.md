@@ -33,6 +33,17 @@ GET /api/globals/reservation-page
 GET /api/globals/legal-pages
 ```
 
+## Media File Endpoint
+
+Payload media documents expose website image URLs under:
+
+```text
+GET /api/media/file/:filename
+HEAD /api/media/file/:filename
+```
+
+The local development CMS serves these files from the runtime `media/` upload directory for JPG/JPEG, PNG, and WEBP files. The frontend should use the `url` or `sizes.*.url` value returned by Payload media relations and may pass it through `next/image`.
+
 ## Frontend Route Mapping
 
 ```text
