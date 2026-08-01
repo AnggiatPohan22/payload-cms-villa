@@ -27,6 +27,8 @@ NEXT_PUBLIC_CMS_URL=http://localhost:3000
 
 Use low `depth` values and request only the endpoints needed by each page.
 
+The final Phase 5 route contract lives in `docs/frontend-api-contract.md`.
+
 ## Phase 4.5 Endpoint Set
 
 The current CMS schema now covers the frontend inventory gaps for services, richer room detail pages, blog, reservation content, and legal pages.

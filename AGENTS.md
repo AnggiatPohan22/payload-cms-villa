@@ -427,13 +427,14 @@ As of the current roadmap:
 - Active branch should be `develop`.
 - Phase 0 through Phase 4 are complete.
 - Phase 4.5 frontend inventory is complete and schema gaps are addressed.
-- Phase 5 API contract is next.
+- Phase 5 API contract is complete in `docs/frontend-api-contract.md`.
+- Phase 6 frontend sync and integration is next, but only in the separate frontend repository.
 - CMS can be viewed via dev server because Phase 2 setup is complete.
-- Frontend integration must wait until Phase 5 API contract is complete.
+- Frontend integration must follow the Phase 5 API contract.
 
 Next safe step:
 
-1. Review Phase 4.5 schema additions.
-2. Verify the new migration on a clean/test database or with explicit approval for local data-loss risk.
-3. Build the Phase 5 API contract docs.
-4. Only then begin frontend sync in the separate frontend repository.
+1. Review `docs/frontend-api-contract.md`.
+2. Smoke test the Phase 5 endpoints against local CMS.
+3. Begin Phase 6 only in the separate frontend repository.
+4. Keep this CMS repo backend/admin only.

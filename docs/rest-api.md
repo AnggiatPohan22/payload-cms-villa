@@ -2,6 +2,8 @@
 
 Payload serves REST endpoints under `/api`.
 
+The route-by-route frontend contract is documented in `docs/frontend-api-contract.md`.
+
 ## Collection Endpoints
 
 ```text
@@ -64,4 +66,4 @@ GET /api/globals/legal-pages
 }
 ```
 
-Use `depth=1` by default and increase only when the frontend needs related media or linked documents.
+Use `depth=1` by default and increase only when the frontend needs related media or linked documents. Use `depth=2` for `home-page` when the frontend needs nested featured room, service, or article relation data with media.

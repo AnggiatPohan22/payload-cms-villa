@@ -27,6 +27,7 @@ Kondisi saat ini:
 - Production deployment belum dimulai.
 - Phase 4.5 inventory selesai dan schema gap frontend sudah ditambahkan ke CMS.
 - Migration schema lanjutan sudah dibuat, tetapi belum diaplikasikan ke database lokal karena Payload menampilkan prompt potensi data loss akibat dev-mode schema push sebelumnya.
+- Phase 5 API contract sudah didokumentasikan di `docs/frontend-api-contract.md`.
 
 Verifikasi terakhir:
 
@@ -141,6 +142,7 @@ Yang sudah dibuat:
   - `docs/environment.md`
   - `docs/local-development.md`
   - `docs/frontend-integration.md`
+  - `docs/frontend-api-contract.md`
   - `docs/deployment-readiness.md`
   - `docs/cms-foundation-report.md`
 
@@ -363,7 +365,7 @@ Gate selesai:
 
 ## Phase 5 - Frontend API Contract
 
-Status: next.
+Status: complete.
 
 Tujuan:
 
@@ -373,18 +375,27 @@ Tujuan:
 
 Checklist:
 
-- [ ] Cocokkan field CMS dengan halaman frontend existing.
-- [ ] Buat daftar endpoint yang dipakai setiap page frontend.
-- [ ] Tentukan `depth` per endpoint.
-- [ ] Tentukan sorting dan filtering.
-- [ ] Tentukan fallback bila data kosong.
-- [ ] Tentukan cache/revalidate per endpoint.
-- [ ] Pastikan frontend hanya memakai `NEXT_PUBLIC_CMS_URL`.
-- [ ] Pastikan secret CMS tidak masuk frontend.
-- [ ] Dokumentasikan response shape untuk media relation.
-- [ ] Dokumentasikan field yang wajib dipakai frontend.
-- [ ] Dokumentasikan fallback untuk setiap section.
-- [ ] Dokumentasikan empty state jika Collection masih kosong.
+- [x] Cocokkan field CMS dengan halaman frontend existing.
+- [x] Buat daftar endpoint yang dipakai setiap page frontend.
+- [x] Tentukan `depth` per endpoint.
+- [x] Tentukan sorting dan filtering.
+- [x] Tentukan fallback bila data kosong.
+- [x] Tentukan cache/revalidate per endpoint.
+- [x] Pastikan frontend hanya memakai `NEXT_PUBLIC_CMS_URL`.
+- [x] Pastikan secret CMS tidak masuk frontend.
+- [x] Dokumentasikan response shape untuk media relation.
+- [x] Dokumentasikan field yang wajib dipakai frontend.
+- [x] Dokumentasikan fallback untuk setiap section.
+- [x] Dokumentasikan empty state jika Collection masih kosong.
+
+Catatan Phase 5:
+
+- Kontrak API final untuk integrasi awal disimpan di `docs/frontend-api-contract.md`.
+- Integrasi frontend belum dimulai di phase ini.
+- Detail route harus query by `slug` dan `status=published`.
+- Default collection list memakai `sort=sortOrder`.
+- Default media relation memakai `depth=1`; `home-page` boleh memakai `depth=2` untuk nested featured room/service/article relation.
+- Frontend fallback tetap wajib tersedia sampai konten CMS production lengkap.
 
 Contoh endpoint:
 
@@ -407,11 +418,11 @@ Gate selesai:
 
 - Frontend contract terdokumentasi.
 - Tidak ada field penting yang miss untuk halaman existing.
-- Frontend bisa fetch data CMS lokal.
+- Frontend bisa mulai fetch data CMS lokal pada Phase 6 setelah helper dibuat di repo frontend terpisah.
 
 ## Phase 6 - Frontend Sync and Integration
 
-Status: not started.
+Status: next.
 
 Tujuan:
 
@@ -549,10 +560,10 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Review dan approve schema tambahan Phase 4.5.
-2. Verifikasi migration lanjutan pada database kosong/test, atau setujui risiko data loss jika memakai database lokal yang sudah pernah berubah lewat dev mode.
-3. Mulai Phase 5 API contract untuk menentukan endpoint, `depth`, fallback, sorting, cache/revalidate, dan response shape final.
-4. Jangan mulai edit frontend sampai Phase 5 selesai.
+1. Review `docs/frontend-api-contract.md`.
+2. Jalankan CMS lokal bila belum berjalan.
+3. Smoke test endpoint Phase 5 dari CMS lokal.
+4. Jika endpoint aman, mulai Phase 6 di repo frontend terpisah dengan helper fetch CMS dan `NEXT_PUBLIC_CMS_URL`.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
