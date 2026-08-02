@@ -33,7 +33,7 @@ Kondisi saat ini:
 - Frontend local integration mencakup `/`, `/villa`, `/rooms`, `/rooms/[slug]`, `/services`, `/services/[slug]`, `/gallery`, `/reservation`, dan `/blog`.
 - Phase 6B content seeding dari fallback data frontend sudah ditambahkan melalui `corepack pnpm run seed:frontend`.
 - Phase 6C CMS sync dan media rendering sudah diperbaiki: home-page hero mapping/cache/media URL/frontend image config diperbaiki di frontend, dan CMS local media route `/api/media/file/:filename` ditambahkan untuk serve upload lokal.
-- Phase 7 Automated Tests and Hardening sudah dimulai dengan Node.js built-in test runner untuk public API dan media route checks.
+- Phase 7 Automated Tests and Hardening sudah dimulai dengan Node.js built-in test runner untuk public API, media route checks, dan authenticated role access checks.
 
 Verifikasi terakhir:
 
@@ -62,7 +62,8 @@ Hasil:
 - Frontend `npm.cmd run build` berhasil pada branch `phase-6-cms-integration`.
 - Frontend lint belum menjadi gate hijau karena `npm.cmd run lint` masih memakai `next lint` yang tidak cocok dengan versi Next/ESLint repo, dan `npx.cmd eslint .` belum bisa dipakai sebelum ada `eslint.config.*`.
 - CMS media file checks untuk `/api/media/file/:filename` sudah mengembalikan `200 image/webp` setelah route lokal ditambahkan.
-- Phase 7 command awal ditambahkan dan berhasil: `corepack pnpm run test:public-api` dengan 7 tests pass.
+- Phase 7 public API command berhasil: `corepack pnpm run test:public-api` dengan 7 tests pass.
+- Phase 7 authenticated role command berhasil: `corepack pnpm run test:roles` dengan 4 tests pass.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -576,8 +577,12 @@ Checklist:
 - [x] Tambahkan test harness endpoint HTTP lokal.
 - [x] Test public read collection hanya mengembalikan `published`.
 - [x] Test draft tidak terbaca publik pada rooms/services/blog/gallery/promotions/testimonials/faqs.
-- [ ] Test editor tidak bisa mengelola user.
-- [ ] Test admin tidak bisa mengubah Super Admin.
+- [x] Test Super Admin bisa manage users dan content.
+- [x] Test Admin bisa manage content tetapi tidak bisa mengubah/delete Super Admin.
+- [x] Test editor tidak bisa mengelola user.
+- [x] Test Editor access terhadap content sesuai policy aktual project.
+- [x] Test unauthenticated user tidak dapat create/update/delete protected content.
+- [x] Test admin tidak bisa mengubah Super Admin.
 - [ ] Test promotion aktif dan expired.
 - [ ] Test upload validation.
 - [ ] Test CORS allowed origin.
@@ -592,7 +597,7 @@ Prioritas awal Phase 7:
 1. Node.js built-in test runner dipilih untuk fase awal karena tidak menambah dependency dan cukup untuk black-box HTTP checks.
 2. Public API dan draft leakage tests sudah dibuat di `tests/integration/public-api.test.mjs`.
 3. Media route tests sudah dibuat karena route ini menjadi dependency langsung untuk frontend images.
-4. Berikutnya tambahkan authenticated role tests untuk editor/admin/super-admin.
+4. Authenticated role tests untuk editor/admin/super-admin sudah dibuat di `tests/integration/authenticated-roles.test.mjs`.
 5. Setelah role tests, lanjut ke CORS, upload validation, dan promotion date behavior.
 
 Gate selesai:
@@ -613,6 +618,18 @@ Hasil:
 - 7 tests pass.
 - 0 tests failed.
 - Public published filtering, draft leakage, `/api/users` forbidden, public globals, dan media file route sudah tercakup.
+
+Verifikasi role Phase 7:
+
+```powershell
+corepack pnpm run test:roles
+```
+
+Hasil:
+
+- 4 tests pass.
+- 0 tests failed.
+- Super Admin, Admin, Editor, dan unauthenticated protected mutation behavior sudah tercakup.
 
 ## Phase 8 - Deployment Preparation
 
@@ -701,10 +718,10 @@ Gate selesai:
 Step berikutnya yang paling aman:
 
 1. Mulai Phase 7 dengan audit test runner dan test strategy untuk Payload 3 + Next App Router.
-2. Tambahkan automated tests paling kritikal: public API hanya membaca published content, `/api/users` tetap forbidden untuk public, dan draft tidak bocor.
-3. Tambahkan tests media route `/api/media/file/:filename` karena route ini dipakai langsung oleh frontend image rendering.
-4. Tambahkan tests API contract minimal untuk endpoint yang sudah dipakai frontend Phase 6.
-5. Setelah tests kritikal hijau, baru lanjut Phase 8 deployment preparation.
+2. Tambahkan promotion active/expired behavior tests.
+3. Tambahkan upload validation tests untuk allowed MIME, unsupported MIME, dan batas ukuran.
+4. Tambahkan CORS allowed/disallowed origin checks.
+5. Setelah test hardening Phase 7 yang tersisa hijau, baru lanjut Phase 8 deployment preparation.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 

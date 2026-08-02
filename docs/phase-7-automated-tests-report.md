@@ -25,6 +25,14 @@ The command runs:
 node --test tests/integration/public-api.test.mjs
 ```
 
+Authenticated role hardening is now covered by:
+
+```powershell
+corepack pnpm run test:roles
+```
+
+The command prepares temporary role fixtures with Payload Local API, then runs HTTP-based role tests against the local CMS REST API.
+
 Optional CMS URL override:
 
 ```powershell
@@ -41,6 +49,11 @@ corepack pnpm run test:public-api
 - Published media file route returns `200` and image content type.
 - Unsupported media extension returns `404`.
 - Encoded path traversal attempt returns `404`.
+- Super Admin can manage users and content.
+- Admin can manage content but cannot update or delete Super Admin records.
+- Editor cannot manage users.
+- Editor can create/update content and cannot delete content under current policy.
+- Unauthenticated users cannot create, update, or delete protected content.
 
 ## Verification Result
 
@@ -60,6 +73,22 @@ fail 0
 skipped 0
 ```
 
+Authenticated role tests:
+
+```powershell
+corepack pnpm run test:roles
+```
+
+Result:
+
+```text
+tests 4
+suites 1
+pass 4
+fail 0
+skipped 0
+```
+
 ## Requirements
 
 Before running:
@@ -72,11 +101,10 @@ The CMS must be reachable at `http://localhost:3000` unless `CMS_TEST_URL` is se
 
 ## Current Scope
 
-These are local integration tests. They do not create users, mutate database content, run migrations, or require frontend code.
+These are local integration tests. Public API tests are read-only. Authenticated role tests create isolated temporary users and FAQ records, then clean them up after the suite. They do not run migrations or require frontend code.
 
 ## Remaining Phase 7 Work
 
-- Add authenticated role tests for editor/admin/super-admin behavior.
 - Add upload validation tests with a controlled fixture.
 - Add CORS origin tests.
 - Add promotion date behavior tests.
