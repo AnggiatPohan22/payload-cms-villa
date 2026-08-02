@@ -4,7 +4,7 @@ Dokumen ini menjadi landasan phase untuk backend headless CMS Villa Resort berba
 
 ## Current Status
 
-Tanggal audit: 1 Agustus 2026.
+Tanggal audit: 2 Agustus 2026.
 
 Branch kerja saat ini:
 
@@ -23,12 +23,17 @@ Kondisi saat ini:
 - CMS sudah berhasil dijalankan lokal dan admin dashboard bisa dibuka.
 - Super Admin sudah berhasil login.
 - Beberapa smoke test Phase 3 sudah berhasil dilakukan manual.
-- Integrasi frontend Next.js terpisah belum dimulai.
+- Integrasi frontend Next.js terpisah sudah dilakukan di repo `C:\laragon\www\villa-ceningan` pada branch `phase-6-cms-integration`.
 - Production deployment belum dimulai.
 - Phase 4.5 inventory selesai dan schema gap frontend sudah ditambahkan ke CMS.
 - Migration schema lanjutan sudah dibuat, tetapi belum diaplikasikan ke database lokal karena Payload menampilkan prompt potensi data loss akibat dev-mode schema push sebelumnya.
 - Phase 5 API contract sudah didokumentasikan di `docs/frontend-api-contract.md`.
+- Phase 6 frontend integration sudah dilakukan di repo frontend terpisah melalui commit `6a7e24b Integrate frontend with Payload CMS API`.
+- Frontend sudah membaca CMS melalui `NEXT_PUBLIC_CMS_URL` dan tetap menyimpan fallback ke `src/data/*`.
+- Frontend local integration mencakup `/`, `/villa`, `/rooms`, `/rooms/[slug]`, `/services`, `/services/[slug]`, `/gallery`, `/reservation`, dan `/blog`.
 - Phase 6B content seeding dari fallback data frontend sudah ditambahkan melalui `corepack pnpm run seed:frontend`.
+- Phase 6C CMS sync dan media rendering sudah diperbaiki: home-page hero mapping/cache/media URL/frontend image config diperbaiki di frontend, dan CMS local media route `/api/media/file/:filename` ditambahkan untuk serve upload lokal.
+- Phase 7 Automated Tests and Hardening sudah dimulai dengan Node.js built-in test runner untuk public API dan media route checks.
 
 Verifikasi terakhir:
 
@@ -53,6 +58,11 @@ Hasil:
 - Migration lanjutan dibuat di `src/migrations/20260801_011752_add_frontend_content_schema.ts`.
 - Verifikasi apply migration lanjutan harus dilakukan hanya pada database kosong/test atau setelah user menyetujui risiko data loss.
 - Seed Phase 6B berhasil mengisi 3 rooms, 4 services, 8 facilities, 6 gallery items, 7 blog posts, 8 FAQs, dan 1 testimonial dari frontend fallback data.
+- Frontend `npx.cmd tsc --noEmit` berhasil pada branch `phase-6-cms-integration`.
+- Frontend `npm.cmd run build` berhasil pada branch `phase-6-cms-integration`.
+- Frontend lint belum menjadi gate hijau karena `npm.cmd run lint` masih memakai `next lint` yang tidak cocok dengan versi Next/ESLint repo, dan `npx.cmd eslint .` belum bisa dipakai sebelum ada `eslint.config.*`.
+- CMS media file checks untuk `/api/media/file/:filename` sudah mengembalikan `200 image/webp` setelah route lokal ditambahkan.
+- Phase 7 command awal ditambahkan dan berhasil: `corepack pnpm run test:public-api` dengan 7 tests pass.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -422,6 +432,57 @@ Gate selesai:
 - Tidak ada field penting yang miss untuk halaman existing.
 - Frontend bisa mulai fetch data CMS lokal pada Phase 6 setelah helper dibuat di repo frontend terpisah.
 
+## Phase 6 - Frontend Sync and Integration
+
+Status: completed for local integration / pending broader automated test coverage.
+
+Tujuan:
+
+- Menghubungkan frontend Next.js terpisah ke CMS melalui Payload REST API.
+- Mengganti konten hardcoded secara bertahap dengan data Payload.
+- Menjaga fallback `src/data/*` agar frontend tetap tampil jika CMS kosong atau tidak reachable.
+
+Checklist:
+
+- [x] Set `NEXT_PUBLIC_CMS_URL` di project frontend.
+- [x] Buat helper Payload REST API di frontend pada `src/lib/cms/`.
+- [x] Pastikan frontend hanya memakai env publik `NEXT_PUBLIC_CMS_URL`.
+- [x] Pertahankan fallback ke `src/data/*`.
+- [x] Integrasikan home page `/`.
+- [x] Integrasikan `/villa`.
+- [x] Integrasikan `/rooms`.
+- [x] Integrasikan `/rooms/[slug]`.
+- [x] Integrasikan `/services`.
+- [x] Integrasikan `/services/[slug]`.
+- [x] Integrasikan `/gallery`.
+- [x] Integrasikan `/reservation`.
+- [x] Integrasikan `/blog`.
+- [x] Support remote image dari CMS URL di frontend `next.config.mjs`.
+- [x] Dokumentasikan integrasi frontend di repo frontend `docs/cms-integration.md`.
+- [x] Update README frontend dengan data layer CMS + fallback.
+- [x] Jalankan frontend `npx.cmd tsc --noEmit`.
+- [x] Jalankan frontend `npm.cmd run build`.
+- [ ] Perbaiki tooling lint frontend agar tidak lagi memakai `next lint`.
+- [ ] Tambahkan automated coverage untuk kontrak CMS/frontend.
+
+Catatan Phase 6:
+
+- Implementasi dilakukan di repo frontend terpisah `C:\laragon\www\villa-ceningan`.
+- Branch frontend: `phase-6-cms-integration`.
+- Commit integrasi awal: `6a7e24b Integrate frontend with Payload CMS API`.
+- Halaman yang sudah membaca CMS: `/`, `/villa`, `/rooms`, `/rooms/[slug]`, `/services`, `/services/[slug]`, `/gallery`, `/reservation`, dan `/blog`.
+- Frontend fallback tetap wajib dipertahankan sampai konten CMS production lengkap dan reviewed.
+- `npm.cmd run lint` frontend belum menjadi gate hijau karena script masih memakai `next lint` yang tidak cocok dengan versi Next/ESLint repo.
+- `npx.cmd eslint .` frontend juga belum bisa menjadi gate sampai repo frontend memiliki `eslint.config.*`.
+
+Gate selesai:
+
+- Frontend bisa membaca CMS lokal melalui `NEXT_PUBLIC_CMS_URL`.
+- Halaman existing tetap tampil baik bila data CMS tersedia.
+- Fallback aman bila CMS kosong atau unreachable.
+- TypeScript dan build frontend hijau.
+- Lint frontend dicatat sebagai tooling follow-up, bukan runtime blocker.
+
 ## Phase 6B - CMS Content Seeding From Frontend Fallback Data
 
 Status: complete.
@@ -461,59 +522,97 @@ Gate selesai:
 - Runtime media upload tidak ikut commit.
 - Dokumentasi mapping tersimpan di `docs/phase-6b-content-seeding-report.md`.
 
-## Phase 6 - Frontend Sync and Integration
+## Phase 6C - Debug CMS Sync and Media Rendering
 
-Status: ready after Phase 6B verification.
+Status: complete for current local sync issues / monitor during Phase 7.
 
 Tujuan:
 
-- Menghubungkan frontend Next.js terpisah ke CMS.
-- Mengganti konten hardcoded secara bertahap dengan data Payload.
+- Memastikan perubahan konten CMS benar-benar muncul di frontend.
+- Memastikan media dari Payload dapat dipakai oleh frontend `next/image`.
+- Memperjelas root cause jika frontend jatuh ke fallback, cache development terlalu kuat, mapping field tidak sesuai, atau media URL tidak bisa diakses.
 
 Checklist:
 
-- [ ] Set `NEXT_PUBLIC_CMS_URL` di project frontend.
-- [ ] Buat helper fetch CMS di frontend.
-- [ ] Integrasikan site settings, header, footer.
-- [ ] Integrasikan home page.
-- [ ] Integrasikan rooms.
-- [ ] Integrasikan facilities.
-- [ ] Integrasikan gallery.
-- [ ] Integrasikan promotions.
-- [ ] Integrasikan FAQs/testimonials bila ada di UI.
-- [ ] Jalankan frontend dan CMS bersamaan.
-- [ ] Test halaman publik dengan CMS lokal.
+- [x] Debug fallback priority dan mapping CMS pada frontend.
+- [x] Perbaiki mapping `home-page.hero.heading` agar perubahan Hero Heading CMS tampil di Home Page frontend.
+- [x] Perbaiki behavior fetch development agar edit CMS mudah terlihat setelah refresh/restart frontend.
+- [x] Perbaiki normalisasi media URL dari Payload untuk frontend.
+- [x] Naikkan query `depth` frontend untuk relation media yang perlu object media.
+- [x] Perbaiki frontend `next.config.mjs` untuk remote image CMS lokal.
+- [x] Tambahkan CMS route lokal `/api/media/file/:filename` untuk serve upload dari folder runtime `media/`.
+- [x] Dokumentasikan CMS media route di `docs/phase-6c-media-file-route-report.md`.
+- [x] Update REST API docs dengan endpoint media file.
+
+Catatan Phase 6C:
+
+- Root cause media sisi CMS: Payload REST API mengembalikan media document dan URL, tetapi project belum memiliki route Next.js eksplisit untuk serve local upload file dari `/api/media/file/:filename`; akibatnya file URL mengembalikan `404` walaupun file ada di folder `media/`.
+- Fix CMS: `app/(payload)/api/media/file/[filename]/route.ts` ditambahkan untuk serve JPG/JPEG, PNG, dan WEBP dari folder runtime `media/`, mendukung `GET` dan `HEAD`, serta menolak path traversal.
+- Root cause sync sisi frontend: Home route awalnya belum memakai `home-page` Global untuk hero, dan beberapa fetch/media config membuat frontend bisa terlihat masih memakai fallback atau gagal render image.
+- Fix frontend dilakukan di repo frontend terpisah: helper CMS, mapper home-page, media normalizer, development no-store behavior, depth query media relation, dan image config lokal.
+- Manual local test aman: edit `Home Page > Hero Heading` di CMS, refresh frontend, perubahan muncul di Home Page; image CMS yang sebelumnya tidak tampil sudah tampil setelah CMS dan frontend dev server direstart.
+- Hydration warning pada Payload admin pernah terlihat di `/admin`, tetapi tidak dikonfirmasi sebagai blocker Phase 6C media/frontend sync. Pantau lagi di Phase 7 jika masih reproducible tanpa browser extension/dev overlay.
 
 Gate selesai:
 
-- Frontend bisa membaca CMS lokal.
-- Halaman existing tetap tampil baik bila data ada.
-- Fallback aman bila data kosong.
+- `GET`/`HEAD /api/media/file/:filename` mengembalikan image lokal yang valid.
+- Frontend dapat memakai URL media dari Payload tanpa hardcode image path.
+- Edit CMS untuk Home Hero terlihat di frontend local.
+- Issue local image optimizer/private IP dicatat sebagai frontend local config concern dan tidak mengubah schema CMS.
 
 ## Phase 7 - Automated Tests and Hardening
 
-Status: not started.
+Status: in progress.
 
 Tujuan:
 
 - Menambah test untuk access control dan public content filtering.
 - Memastikan perubahan selanjutnya tidak merusak kontrak CMS.
+- Mengunci behavior media route lokal, CORS, dan API contract sebelum deployment preparation.
 
 Checklist:
 
-- [ ] Pilih test runner.
-- [ ] Test public read hanya published.
-- [ ] Test draft tidak terbaca publik.
+- [x] Pilih test runner awal.
+- [x] Tambahkan test harness endpoint HTTP lokal.
+- [x] Test public read collection hanya mengembalikan `published`.
+- [x] Test draft tidak terbaca publik pada rooms/services/blog/gallery/promotions/testimonials/faqs.
 - [ ] Test editor tidak bisa mengelola user.
 - [ ] Test admin tidak bisa mengubah Super Admin.
 - [ ] Test promotion aktif dan expired.
 - [ ] Test upload validation.
 - [ ] Test CORS allowed origin.
+- [x] Test `/api/users` tetap `403 Forbidden` untuk public request.
+- [x] Test `/api/media/file/:filename` mengembalikan `200` untuk file image valid.
+- [x] Test `/api/media/file/:filename` mengembalikan `404` untuk path traversal atau extension unsupported.
+- [x] Test globals public read untuk site-settings, header, footer, home-page, reservation-page, dan legal-pages.
+- [x] Dokumentasikan command test aktual setelah test runner dipilih.
+
+Prioritas awal Phase 7:
+
+1. Node.js built-in test runner dipilih untuk fase awal karena tidak menambah dependency dan cukup untuk black-box HTTP checks.
+2. Public API dan draft leakage tests sudah dibuat di `tests/integration/public-api.test.mjs`.
+3. Media route tests sudah dibuat karena route ini menjadi dependency langsung untuk frontend images.
+4. Berikutnya tambahkan authenticated role tests untuk editor/admin/super-admin.
+5. Setelah role tests, lanjut ke CORS, upload validation, dan promotion date behavior.
 
 Gate selesai:
 
 - Test critical access control hijau.
+- Test media route hijau.
+- Test public API contract minimal hijau.
 - Dokumentasi verification diperbarui dengan hasil test aktual.
+
+Verifikasi awal Phase 7:
+
+```powershell
+corepack pnpm run test:public-api
+```
+
+Hasil:
+
+- 7 tests pass.
+- 0 tests failed.
+- Public published filtering, draft leakage, `/api/users` forbidden, public globals, dan media file route sudah tercakup.
 
 ## Phase 8 - Deployment Preparation
 
@@ -601,10 +700,11 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Review `docs/frontend-api-contract.md`.
-2. Jalankan CMS lokal bila belum berjalan.
-3. Smoke test endpoint Phase 5 dan Phase 6B dari CMS lokal.
-4. Jika endpoint aman, mulai Phase 6 di repo frontend terpisah dengan helper fetch CMS dan `NEXT_PUBLIC_CMS_URL`.
+1. Mulai Phase 7 dengan audit test runner dan test strategy untuk Payload 3 + Next App Router.
+2. Tambahkan automated tests paling kritikal: public API hanya membaca published content, `/api/users` tetap forbidden untuk public, dan draft tidak bocor.
+3. Tambahkan tests media route `/api/media/file/:filename` karena route ini dipakai langsung oleh frontend image rendering.
+4. Tambahkan tests API contract minimal untuk endpoint yang sudah dipakai frontend Phase 6.
+5. Setelah tests kritikal hijau, baru lanjut Phase 8 deployment preparation.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 
@@ -621,6 +721,8 @@ http://localhost:3000/admin
 ```
 
 ## Open Questions to Check Before Frontend Sync
+
+Phase 6 local frontend sync sudah berjalan. Pertanyaan lama di bawah disimpan sebagai historical checklist dan deployment planning reference.
 
 - Apakah struktur halaman frontend existing hanya terdiri dari Home, About, Contact, Rooms, Facilities, Gallery, Promotions, FAQ, dan Testimonials?
 - Apakah semua nama field CMS sudah cocok dengan kebutuhan desain frontend?

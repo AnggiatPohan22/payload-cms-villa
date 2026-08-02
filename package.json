@@ -14,6 +14,7 @@
     "migrate": "payload migrate",
     "seed": "payload run src/seed.ts",
     "seed:frontend": "payload run src/scripts/seedFrontendFallback.ts",
+    "test:public-api": "node --test tests/integration/public-api.test.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
