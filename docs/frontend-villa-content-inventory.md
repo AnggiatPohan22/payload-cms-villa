@@ -448,6 +448,12 @@ Gaps:
 - `home-page` currently does not include SEO fields.
 - `gallery-page`, `rooms-page`, `services-page`, `blog-page`, legal pages, and reservation page SEO are not represented as CMS editable content.
 
+Phase 7.5 update:
+
+- `rooms-page`, `services-page`, and `blog-page` Globals now provide page-level hero/listing copy and SEO.
+- `legal-pages` and `reservation-page` already include SEO fields.
+- `gallery-page` page-level copy remains a future optional Global if the gallery route needs CMS-editable hero/intro content.
+
 Recommendation:
 
 - Before Phase 5, decide which page-level SEO fields must be CMS-managed.

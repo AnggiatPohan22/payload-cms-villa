@@ -28,8 +28,11 @@ GET /api/globals/header
 GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/globals/about-page
+GET /api/globals/rooms-page
+GET /api/globals/services-page
 GET /api/globals/contact-page
 GET /api/globals/reservation-page
+GET /api/globals/blog-page
 GET /api/globals/legal-pages
 ```
 
@@ -49,12 +52,14 @@ The local development CMS serves these files from the runtime `media/` upload di
 ```text
 /                         -> site-settings, header, footer, home-page, rooms, services, blog, testimonials, faqs
 /about-us                 -> about-page, site-settings, header, footer
-/villa                    -> rooms
+/villa                    -> about-page, rooms
 /villa/[slug]             -> rooms by slug
-/services                 -> services
+/rooms                    -> rooms-page, rooms
+/rooms/[slug]             -> rooms by slug
+/services                 -> services-page, services
 /services/[slug]          -> services by slug
 /reservation              -> reservation-page, rooms
-/blog                     -> blog
+/blog                     -> blog-page, blog
 /blog/[slug]              -> blog by slug
 /terms, /privacy, /cookies -> legal-pages
 ```

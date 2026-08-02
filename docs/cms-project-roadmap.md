@@ -34,6 +34,7 @@ Kondisi saat ini:
 - Phase 6B content seeding dari fallback data frontend sudah ditambahkan melalui `corepack pnpm run seed:frontend`.
 - Phase 6C CMS sync dan media rendering sudah diperbaiki: home-page hero mapping/cache/media URL/frontend image config diperbaiki di frontend, dan CMS local media route `/api/media/file/:filename` ditambahkan untuk serve upload lokal.
 - Phase 7 Automated Tests and Hardening sudah berjalan dengan Node.js built-in test runner untuk public API, media route checks, authenticated role access checks, promotion lifecycle, upload validation, dan CORS checks.
+- Phase 7.5 CMS Content Coverage and Admin UX Cleanup sudah menambahkan page-level CMS coverage dan sidebar admin yang lebih siap dipakai client/staff.
 
 Verifikasi terakhir:
 
@@ -65,6 +66,8 @@ Hasil:
 - Phase 7 public API command berhasil: `corepack pnpm run test:public-api` dengan 7 tests pass.
 - Phase 7 authenticated role command berhasil: `corepack pnpm run test:roles` dengan 4 tests pass.
 - Phase 7 hardening command berhasil: `corepack pnpm run test:hardening` dengan 6 tests pass.
+- Phase 7.5 menambahkan `rooms-page`, `services-page`, dan `blog-page` Globals, extend Footer Global, dan rapikan admin sidebar grouping.
+- Phase 7.5 migration dibuat di `src/migrations/20260802_135950_phase_7_5_content_coverage_admin_ux.ts`.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -652,6 +655,58 @@ Catatan promotion behavior:
 - Promotion dengan `status=published` tetap returned walaupun `endDate` sudah lewat.
 - Jika expired promotion harus otomatis hilang dari public API, perlu perubahan policy/query eksplisit dan update kontrak frontend.
 
+## Phase 7.5 - CMS Content Coverage and Admin UX Cleanup
+
+Status: complete for CMS schema/docs/tests / pending frontend mapper follow-up.
+
+Tujuan:
+
+- Memastikan page-level content untuk route frontend penting punya CMS source yang jelas.
+- Merapikan Footer Global agar sesuai kebutuhan frontend aktual.
+- Merapikan Payload Admin sidebar supaya lebih mudah dipakai client/staff.
+- Menunda Phase 8 sampai coverage konten dan admin UX dasar selesai.
+
+Checklist:
+
+- [x] Audit frontend routes `/`, `/villa`, `/rooms`, `/rooms/[slug]`, `/services`, `/services/[slug]`, `/gallery`, `/reservation`, `/blog`, `/terms`, `/privacy`, dan `/cookies`.
+- [x] Audit frontend footer `SiteFooter.tsx` dan CMS Footer Global.
+- [x] Tambahkan `rooms-page` Global.
+- [x] Tambahkan `services-page` Global.
+- [x] Tambahkan `blog-page` Global.
+- [x] Extend `footer` Global secara non-breaking.
+- [x] Extend `legal-pages` dengan machine-readable `updatedAt`.
+- [x] Rapikan admin sidebar groups: Pages, Content, Posts, Media, Settings.
+- [x] Update seed utama dan `seed:frontend`.
+- [x] Update docs API, collection, frontend integration, frontend API contract, dan report Phase 7.5.
+- [x] Generate Payload types setelah schema update.
+- [x] Jalankan verification command Phase 7.5.
+- [x] Smoke test endpoint Global baru.
+- [ ] Manual browser smoke `/admin` setelah normal dev server `localhost:3000` direstart.
+- [x] Commit dan push ke `develop`.
+
+Catatan Phase 7.5:
+
+- Frontend repo `C:\laragon\www\villa-ceningan` diaudit read-only pada branch `phase-6-cms-integration`.
+- Frontend repo memiliki perubahan lokal existing di `next-env.d.ts`; file itu tidak disentuh.
+- Frontend saat ini belum consume `rooms-page`, `services-page`, `blog-page`, atau struktur Footer Global baru.
+- Follow-up frontend diperlukan sebelum Phase 8 jika goal Phase 8 mencakup staging yang merefleksikan semua konten CMS terbaru.
+- Verification API/tests dijalankan terhadap clean temporary dev server `http://localhost:3002` karena dev server user di `localhost:3000` sempat return `500` setelah concurrent test/schema push race.
+
+Endpoint baru:
+
+```text
+GET /api/globals/rooms-page
+GET /api/globals/services-page
+GET /api/globals/blog-page
+```
+
+Gate selesai:
+
+- New Global endpoints return `200`.
+- Typecheck, lint, build strict, and Phase 7 automated tests pass.
+- Seed/import fills the new Globals without deleting manual content by default.
+- Remaining frontend mapper work is documented.
+
 ## Phase 8 - Deployment Preparation
 
 Status: not started.
@@ -738,9 +793,9 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Buat command konsolidasi opsional untuk menjalankan semua suite Phase 7 jika diinginkan.
-2. Putuskan policy promotion expiry sebelum deployment: tetap frontend/query-managed atau CMS-enforced.
-3. Lanjut Phase 8 Deployment Preparation setelah keputusan promotion expiry dicatat.
+1. Restart normal CMS dev server di `localhost:3000` dan lakukan manual `/admin` sidebar smoke test.
+2. Jalankan atau rencanakan frontend follow-up mapper untuk `rooms-page`, `services-page`, `blog-page`, dan `footer`.
+3. Setelah CMS coverage dan frontend mapper plan aman, lanjut Phase 8 Deployment Preparation.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 

@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import { buildConfig } from 'payload'
 import { AboutPage } from '@/globals/AboutPage'
 import { Blog } from '@/collections/Blog'
+import { BlogPage } from '@/globals/BlogPage'
 import { ContactPage } from '@/globals/ContactPage'
 import { FAQs } from '@/collections/FAQs'
 import { Facilities } from '@/collections/Facilities'
@@ -18,7 +19,9 @@ import { Media } from '@/collections/Media'
 import { Promotions } from '@/collections/Promotions'
 import { ReservationPage } from '@/globals/ReservationPage'
 import { Rooms } from '@/collections/Rooms'
+import { RoomsPage } from '@/globals/RoomsPage'
 import { Services } from '@/collections/Services'
+import { ServicesPage } from '@/globals/ServicesPage'
 import { SiteSettings } from '@/globals/SiteSettings'
 import { Testimonials } from '@/collections/Testimonials'
 import { Users } from '@/collections/Users'
@@ -47,7 +50,19 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Rooms, Services, Facilities, Gallery, Promotions, Blog, Testimonials, FAQs],
-  globals: [SiteSettings, Header, Footer, HomePage, AboutPage, ContactPage, ReservationPage, LegalPages],
+  globals: [
+    SiteSettings,
+    Header,
+    Footer,
+    HomePage,
+    AboutPage,
+    RoomsPage,
+    ServicesPage,
+    ContactPage,
+    ReservationPage,
+    BlogPage,
+    LegalPages,
+  ],
   cors: {
     origins: getAllowedOrigins(),
   },

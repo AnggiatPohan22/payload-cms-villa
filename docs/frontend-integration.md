@@ -41,8 +41,11 @@ GET /api/globals/header
 GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/globals/about-page
+GET /api/globals/rooms-page
+GET /api/globals/services-page
 GET /api/globals/contact-page
 GET /api/globals/reservation-page
+GET /api/globals/blog-page
 GET /api/globals/legal-pages
 GET /api/rooms?where[status][equals]=published&sort=sortOrder
 GET /api/services?where[status][equals]=published&sort=sortOrder
@@ -54,3 +57,18 @@ GET /api/faqs?where[status][equals]=published&sort=sortOrder
 ```
 
 For detail pages, request by `slug` and include `where[status][equals]=published`. Use `depth=1` when media relations are needed, and raise it only for sections that require nested relation data.
+
+## Phase 7.5 Frontend Follow-up
+
+The CMS now exposes page-level Globals for `/rooms`, `/services`, and `/blog`, plus a richer Footer Global.
+
+Frontend follow-up in the separate `C:\laragon\www\villa-ceningan` repo should add mappers for:
+
+```text
+GET /api/globals/rooms-page?depth=1
+GET /api/globals/services-page?depth=1
+GET /api/globals/blog-page?depth=1
+GET /api/globals/footer?depth=1
+```
+
+The current frontend branch `phase-6-cms-integration` still uses collection data for rooms/services/blog lists and fallback/static copy for those page heroes and footer layout. Keep fallback data in place.

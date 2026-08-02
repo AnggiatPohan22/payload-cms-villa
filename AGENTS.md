@@ -58,9 +58,10 @@ Urutan kerja utama:
 7. Phase 5 - Frontend API Contract.
 8. Phase 6 - Frontend Sync and Integration.
 9. Phase 7 - Automated Tests and Hardening.
-10. Phase 8 - Deployment Preparation.
-11. Phase 9 - Staging / Live Smoke Test.
-12. Phase 10 - Merge to Main and Production Release.
+10. Phase 7.5 - CMS Content Coverage and Admin UX Cleanup.
+11. Phase 8 - Deployment Preparation.
+12. Phase 9 - Staging / Live Smoke Test.
+13. Phase 10 - Merge to Main and Production Release.
 
 Jangan lompat ke phase berikutnya jika gate phase sebelumnya belum selesai, kecuali user meminta audit atau planning saja.
 
@@ -184,8 +185,11 @@ Current Globals:
 - `footer`
 - `home-page`
 - `about-page`
+- `rooms-page`
+- `services-page`
 - `contact-page`
 - `reservation-page`
+- `blog-page`
 - `legal-pages`
 
 Rules:
@@ -266,8 +270,11 @@ GET /api/globals/header
 GET /api/globals/footer
 GET /api/globals/home-page
 GET /api/globals/about-page
+GET /api/globals/rooms-page
+GET /api/globals/services-page
 GET /api/globals/contact-page
 GET /api/globals/reservation-page
+GET /api/globals/blog-page
 GET /api/globals/legal-pages
 ```
 
@@ -425,16 +432,17 @@ Rules:
 As of the current roadmap:
 
 - Active branch should be `develop`.
-- Phase 0 through Phase 4 are complete.
+- Phase 0 through Phase 7 are complete for local CMS hardening.
 - Phase 4.5 frontend inventory is complete and schema gaps are addressed.
 - Phase 5 API contract is complete in `docs/frontend-api-contract.md`.
-- Phase 6 frontend sync and integration is next, but only in the separate frontend repository.
+- Phase 6 frontend sync and integration was done in the separate frontend repository.
+- Phase 7.5 adds CMS page coverage and admin sidebar cleanup before Phase 8 deployment preparation.
 - CMS can be viewed via dev server because Phase 2 setup is complete.
-- Frontend integration must follow the Phase 5 API contract.
+- Frontend integration must follow the current API contract and Phase 7.5 follow-up notes.
 
 Next safe step:
 
-1. Review `docs/frontend-api-contract.md`.
-2. Smoke test the Phase 5 endpoints against local CMS.
-3. Begin Phase 6 only in the separate frontend repository.
+1. Review `docs/phase-7-5-content-coverage-admin-ux-report.md`.
+2. Restart the normal CMS dev server on `localhost:3000` and manually check `/admin`.
+3. Update frontend mappers in the separate frontend repository for `rooms-page`, `services-page`, `blog-page`, and `footer`.
 4. Keep this CMS repo backend/admin only.

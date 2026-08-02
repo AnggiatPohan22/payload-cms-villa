@@ -8,7 +8,7 @@ export const AboutPage: GlobalConfig = {
   slug: 'about-page',
   label: 'About Page',
   admin: {
-    group: 'Website',
+    group: 'Pages',
   },
   access: {
     read: () => true,

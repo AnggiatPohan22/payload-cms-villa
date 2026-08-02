@@ -31,14 +31,15 @@ Production frontend must point this variable to the production CMS origin. CMS s
 | --- | --- | --- | --- | --- |
 | `/` | `site-settings`, `header`, `footer`, `home-page`, `rooms`, `services`, `blog`, `testimonials`, `faqs` | Globals `1`, `home-page` `2`, collections `1` | `revalidate: 60` | Static home/property data, hide inactive sections |
 | `/about-us` | `site-settings`, `header`, `footer`, `about-page` | `1` | `revalidate: 300` | Static about copy |
-| `/villa` and `/rooms` | `rooms` list | `1` | `revalidate: 120` | Static rooms or curated empty state |
+| `/villa` | `about-page`, `rooms` list | `1` | `revalidate: 120` | Static rooms or curated empty state |
+| `/rooms` | `rooms-page`, `rooms` list | `1` | `revalidate: 120` | Static rooms or curated empty state |
 | `/rooms/[slug]` | `rooms` by slug | `1` | `revalidate: 120` | `notFound()` if CMS and static fallback are missing |
-| `/services` | `services` list | `1` | `revalidate: 300` | Static services or hide detail links |
+| `/services` | `services-page`, `services` list | `1` | `revalidate: 300` | Static services or hide detail links |
 | `/services/[slug]` | `services` by slug | `1` | `revalidate: 300` | `notFound()` if CMS and static fallback are missing |
 | `/gallery` | `gallery` list | `1` | `revalidate: 300` | Static gallery images |
 | `/reservation` | `reservation-page`, `rooms` list, `site-settings` | `1` | `revalidate: 120` | WhatsApp-first static inquiry content |
 | `/contact` | `contact-page`, `site-settings` | `1` | `revalidate: 300` | Static contact/property data |
-| `/blog` | `blog` list | `1` | `revalidate: 300` | Static blog list or hide journal section |
+| `/blog` | `blog-page`, `blog` list | `1` | `revalidate: 300` | Static blog list or hide journal section |
 | `/blog/[slug]` | `blog` by slug | `1` | `revalidate: 300` | `notFound()` if CMS and static fallback are missing |
 | `/terms` | `legal-pages` global, use `terms` group | `1` | `revalidate: 3600` | Static legal terms |
 | `/privacy` | `legal-pages` global, use `privacy` group | `1` | `revalidate: 3600` | Static privacy policy |
@@ -52,8 +53,11 @@ GET /api/globals/header?depth=1
 GET /api/globals/footer?depth=1
 GET /api/globals/home-page?depth=2
 GET /api/globals/about-page?depth=1
+GET /api/globals/rooms-page?depth=1
+GET /api/globals/services-page?depth=1
 GET /api/globals/contact-page?depth=1
 GET /api/globals/reservation-page?depth=1
+GET /api/globals/blog-page?depth=1
 GET /api/globals/legal-pages?depth=1
 
 GET /api/rooms?where[status][equals]=published&sort=sortOrder&depth=1
@@ -269,6 +273,9 @@ Before editing the separate frontend repo, verify these local CMS API calls whil
 
 ```powershell
 Invoke-WebRequest "http://localhost:3000/api/globals/site-settings?depth=1"
+Invoke-WebRequest "http://localhost:3000/api/globals/rooms-page?depth=1"
+Invoke-WebRequest "http://localhost:3000/api/globals/services-page?depth=1"
+Invoke-WebRequest "http://localhost:3000/api/globals/blog-page?depth=1"
 Invoke-WebRequest "http://localhost:3000/api/rooms?where[status][equals]=published&sort=sortOrder&depth=1"
 Invoke-WebRequest "http://localhost:3000/api/services?where[status][equals]=published&sort=sortOrder&depth=1"
 Invoke-WebRequest "http://localhost:3000/api/blog?where[status][equals]=published&sort=sortOrder&depth=1"

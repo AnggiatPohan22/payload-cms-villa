@@ -22,7 +22,7 @@ export const Header: GlobalConfig = {
   slug: 'header',
   label: 'Header',
   admin: {
-    group: 'Website',
+    group: 'Settings',
   },
   access: {
     read: () => true,

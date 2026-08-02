@@ -4,9 +4,9 @@ import { ctaFields } from '@/fields/cta'
 import { imageRelation } from '@/fields/media'
 import { seoFields } from '@/fields/seo'
 
-export const ContactPage: GlobalConfig = {
-  slug: 'contact-page',
-  label: 'Contact Page',
+export const RoomsPage: GlobalConfig = {
+  slug: 'rooms-page',
+  label: 'Rooms Page',
   admin: {
     group: 'Pages',
   },
@@ -19,18 +19,15 @@ export const ContactPage: GlobalConfig = {
     max: 20,
   },
   fields: [
+    { name: 'heroEyebrow', type: 'text', maxLength: 80 },
     { name: 'heroHeading', type: 'text', required: true, maxLength: 140 },
     { name: 'heroDescription', type: 'textarea', maxLength: 320 },
     imageRelation('heroImage'),
-    { name: 'contactHeading', type: 'text', maxLength: 140 },
-    { name: 'contactDescription', type: 'textarea' },
-    { name: 'phone', type: 'text' },
-    { name: 'email', type: 'email' },
-    { name: 'whatsApp', type: 'text' },
-    { name: 'address', type: 'textarea' },
-    { name: 'mapEmbedURL', type: 'text' },
-    { name: 'operationalHours', type: 'array', fields: [{ name: 'label', type: 'text' }, { name: 'hours', type: 'text' }] },
-    ctaFields('finalCTA'),
+    { name: 'introHeading', type: 'text', maxLength: 140 },
+    { name: 'introDescription', type: 'textarea', maxLength: 320 },
+    { name: 'listingHeading', type: 'text', maxLength: 140 },
+    { name: 'listingDescription', type: 'textarea', maxLength: 320 },
+    ctaFields('listingCTA'),
     seoFields,
   ],
 }

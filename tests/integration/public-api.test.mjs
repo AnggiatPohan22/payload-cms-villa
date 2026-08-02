@@ -19,7 +19,10 @@ const publicGlobals = [
   'header',
   'footer',
   'home-page',
+  'rooms-page',
+  'services-page',
   'reservation-page',
+  'blog-page',
   'legal-pages',
 ]
 

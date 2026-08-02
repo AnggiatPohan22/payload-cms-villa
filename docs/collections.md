@@ -20,8 +20,11 @@
 - `footer`
 - `home-page`
 - `about-page`
+- `rooms-page`
+- `services-page`
 - `contact-page`
 - `reservation-page`
+- `blog-page`
 - `legal-pages`
 
 ## Frontend Content Additions
@@ -34,6 +37,24 @@ Phase 4.5 added schema coverage for the content gaps found in the separate Villa
 - Reservation Page global: hero content, search preview, booking benefits, room detail references, overview content, WhatsApp CTA, and SEO.
 - Legal Pages global: fixed editable content for terms, privacy, and cookies.
 - Header global: route options aligned with frontend routes while preserving existing route values for database safety.
+
+## Phase 7.5 Content Coverage Additions
+
+Phase 7.5 added safer CMS control for listing/page-level frontend copy before deployment preparation:
+
+- Rooms Page global: hero, intro, listing copy, listing CTA, hero image, and SEO for `/rooms`.
+- Services Page global: hero, intro, listing copy, final CTA, hero image, and SEO for `/services`.
+- Blog Page global: hero, intro, listing copy, hero image, and SEO for `/blog`.
+- Footer global: extended with `brand`, `contact`, `navigationColumns`, richer `socialLinks`, `legalLinks`, and `bookingCta` while keeping existing fields for compatibility.
+- Legal Pages global: existing terms/privacy/cookies structure retained and extended with machine-readable `updatedAt` date next to `updatedAtLabel`.
+
+Admin sidebar groups now use:
+
+- `Pages`: fixed page Globals.
+- `Content`: Rooms, Services, Facilities, Gallery, Promotions, Testimonials, FAQs.
+- `Posts`: Blog posts.
+- `Media`: Media library.
+- `Settings`: Site Settings, Header, Footer, Users.
 
 ## Publishing
 

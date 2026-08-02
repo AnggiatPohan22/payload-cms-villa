@@ -109,8 +109,11 @@ export interface Config {
     footer: Footer;
     'home-page': HomePage;
     'about-page': AboutPage;
+    'rooms-page': RoomsPage;
+    'services-page': ServicesPage;
     'contact-page': ContactPage;
     'reservation-page': ReservationPage;
+    'blog-page': BlogPage;
     'legal-pages': LegalPage;
   };
   globalsSelect: {
@@ -119,8 +122,11 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'rooms-page': RoomsPageSelect<false> | RoomsPageSelect<true>;
+    'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'reservation-page': ReservationPageSelect<false> | ReservationPageSelect<true>;
+    'blog-page': BlogPageSelect<false> | BlogPageSelect<true>;
     'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
   };
   locale: null;
@@ -1206,15 +1212,41 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  brand?: {
+    logo?: (number | null) | Media;
+    description?: string | null;
+    tagline?: string | null;
+  };
   shortDescription?: string | null;
+  contact?: {
+    phone?: string | null;
+    whatsapp?: string | null;
+    email?: string | null;
+    address?: string | null;
+  };
   contactInformation?: {
     phone?: string | null;
     email?: string | null;
     whatsApp?: string | null;
     address?: string | null;
   };
+  navigationColumns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              url: string;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   socialLinks?:
     | {
+        platform?: ('instagram' | 'facebook' | 'youtube' | 'whatsapp' | 'email' | 'other') | null;
         label: string;
         url: string;
         openInNewTab?: boolean | null;
@@ -1229,6 +1261,20 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  legalLinks?:
+    | {
+        label: string;
+        url: string;
+        openInNewTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  bookingCta?: {
+    label?: string | null;
+    url?: string | null;
+    openInNewTab?: boolean | null;
+    variant?: ('primary' | 'secondary' | 'text') | null;
+  };
   copyrightText?: string | null;
   termsURL?: string | null;
   privacyURL?: string | null;
@@ -1418,6 +1464,70 @@ export interface AboutPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rooms-page".
+ */
+export interface RoomsPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroHeading: string;
+  heroDescription?: string | null;
+  heroImage?: (number | null) | Media;
+  introHeading?: string | null;
+  introDescription?: string | null;
+  listingHeading?: string | null;
+  listingDescription?: string | null;
+  listingCTA?: {
+    label?: string | null;
+    url?: string | null;
+    openInNewTab?: boolean | null;
+    variant?: ('primary' | 'secondary' | 'text') | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page".
+ */
+export interface ServicesPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroHeading: string;
+  heroDescription?: string | null;
+  heroImage?: (number | null) | Media;
+  introHeading?: string | null;
+  introDescription?: string | null;
+  listingHeading?: string | null;
+  listingDescription?: string | null;
+  finalCTA?: {
+    label?: string | null;
+    url?: string | null;
+    openInNewTab?: boolean | null;
+    variant?: ('primary' | 'secondary' | 'text') | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-page".
  */
 export interface ContactPage {
@@ -1529,6 +1639,32 @@ export interface ReservationPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page".
+ */
+export interface BlogPage {
+  id: number;
+  heroEyebrow?: string | null;
+  heroHeading: string;
+  heroDescription?: string | null;
+  heroImage?: (number | null) | Media;
+  introHeading?: string | null;
+  introDescription?: string | null;
+  listingHeading?: string | null;
+  listingDescription?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    openGraphImage?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+    noFollow?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "legal-pages".
  */
 export interface LegalPage {
@@ -1538,6 +1674,7 @@ export interface LegalPage {
     title: string;
     summary?: string | null;
     updatedAtLabel?: string | null;
+    updatedAt?: string | null;
     sections?:
       | {
           title: string;
@@ -1564,6 +1701,7 @@ export interface LegalPage {
     title: string;
     summary?: string | null;
     updatedAtLabel?: string | null;
+    updatedAt?: string | null;
     sections?:
       | {
           title: string;
@@ -1590,6 +1728,7 @@ export interface LegalPage {
     title: string;
     summary?: string | null;
     updatedAtLabel?: string | null;
+    updatedAt?: string | null;
     sections?:
       | {
           title: string;
@@ -1685,7 +1824,22 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        logo?: T;
+        description?: T;
+        tagline?: T;
+      };
   shortDescription?: T;
+  contact?:
+    | T
+    | {
+        phone?: T;
+        whatsapp?: T;
+        email?: T;
+        address?: T;
+      };
   contactInformation?:
     | T
     | {
@@ -1694,9 +1848,24 @@ export interface FooterSelect<T extends boolean = true> {
         whatsApp?: T;
         address?: T;
       };
+  navigationColumns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   socialLinks?:
     | T
     | {
+        platform?: T;
         label?: T;
         url?: T;
         openInNewTab?: T;
@@ -1709,6 +1878,22 @@ export interface FooterSelect<T extends boolean = true> {
         url?: T;
         openInNewTab?: T;
         id?: T;
+      };
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        id?: T;
+      };
+  bookingCta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        variant?: T;
       };
   copyrightText?: T;
   termsURL?: T;
@@ -1904,6 +2089,78 @@ export interface AboutPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rooms-page_select".
+ */
+export interface RoomsPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroHeading?: T;
+  heroDescription?: T;
+  heroImage?: T;
+  introHeading?: T;
+  introDescription?: T;
+  listingHeading?: T;
+  listingDescription?: T;
+  listingCTA?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        variant?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page_select".
+ */
+export interface ServicesPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroHeading?: T;
+  heroDescription?: T;
+  heroImage?: T;
+  introHeading?: T;
+  introDescription?: T;
+  listingHeading?: T;
+  listingDescription?: T;
+  finalCTA?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        openInNewTab?: T;
+        variant?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-page_select".
  */
 export interface ContactPageSelect<T extends boolean = true> {
@@ -2025,6 +2282,34 @@ export interface ReservationPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page_select".
+ */
+export interface BlogPageSelect<T extends boolean = true> {
+  heroEyebrow?: T;
+  heroHeading?: T;
+  heroDescription?: T;
+  heroImage?: T;
+  introHeading?: T;
+  introDescription?: T;
+  listingHeading?: T;
+  listingDescription?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        openGraphImage?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+        noFollow?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "legal-pages_select".
  */
 export interface LegalPagesSelect<T extends boolean = true> {
@@ -2035,6 +2320,7 @@ export interface LegalPagesSelect<T extends boolean = true> {
         title?: T;
         summary?: T;
         updatedAtLabel?: T;
+        updatedAt?: T;
         sections?:
           | T
           | {
@@ -2065,6 +2351,7 @@ export interface LegalPagesSelect<T extends boolean = true> {
         title?: T;
         summary?: T;
         updatedAtLabel?: T;
+        updatedAt?: T;
         sections?:
           | T
           | {
@@ -2095,6 +2382,7 @@ export interface LegalPagesSelect<T extends boolean = true> {
         title?: T;
         summary?: T;
         updatedAtLabel?: T;
+        updatedAt?: T;
         sections?:
           | T
           | {

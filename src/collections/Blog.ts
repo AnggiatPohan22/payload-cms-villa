@@ -8,7 +8,7 @@ import { setPublishMetadata } from '@/hooks/publish'
 export const Blog: CollectionConfig = {
   slug: 'blog',
   admin: {
-    group: 'Content',
+    group: 'Posts',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'category', 'featured', 'sortOrder', 'status'],
   },

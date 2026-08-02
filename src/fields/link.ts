@@ -13,9 +13,13 @@ export const linkFields: Field[] = [
     required: true,
     validate: (value: string | null | undefined) => {
       if (!value) return 'URL is required.'
-      return value.startsWith('/') || value.startsWith('http://') || value.startsWith('https://')
+      return value.startsWith('/') ||
+        value.startsWith('http://') ||
+        value.startsWith('https://') ||
+        value.startsWith('mailto:') ||
+        value.startsWith('tel:')
         ? true
-        : 'Use a relative URL or a valid HTTP(S) URL.'
+        : 'Use a relative URL, HTTP(S), mailto, or tel URL.'
     },
   },
   {

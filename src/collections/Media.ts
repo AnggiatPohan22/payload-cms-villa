@@ -5,7 +5,7 @@ import { validateImageUploadSize } from '@/hooks/upload'
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
-    group: 'System',
+    group: 'Media',
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'alt', 'category', 'updatedAt'],
   },

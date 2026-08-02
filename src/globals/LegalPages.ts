@@ -11,6 +11,7 @@ const legalPageFields = (name: string, label: string): Field => ({
     { name: 'title', type: 'text', required: true, maxLength: 140 },
     { name: 'summary', type: 'textarea', maxLength: 320 },
     { name: 'updatedAtLabel', type: 'text', maxLength: 80 },
+    { name: 'updatedAt', type: 'date' },
     {
       name: 'sections',
       type: 'array',
@@ -31,7 +32,7 @@ export const LegalPages: GlobalConfig = {
   slug: 'legal-pages',
   label: 'Legal Pages',
   admin: {
-    group: 'Website',
+    group: 'Pages',
   },
   access: {
     read: () => true,

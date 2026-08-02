@@ -17,7 +17,7 @@ export const HomePage: GlobalConfig = {
   slug: 'home-page',
   label: 'Home Page',
   admin: {
-    group: 'Website',
+    group: 'Pages',
   },
   access: {
     read: () => true,

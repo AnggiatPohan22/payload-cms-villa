@@ -8,7 +8,7 @@ import { setPublishMetadata } from '@/hooks/publish'
 export const Rooms: CollectionConfig = {
   slug: 'rooms',
   admin: {
-    group: 'Accommodation',
+    group: 'Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'featured', 'sortOrder', 'status'],
   },

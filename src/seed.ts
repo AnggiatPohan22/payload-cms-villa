@@ -123,17 +123,60 @@ const main = async () => {
   await payload.updateGlobal({
     slug: 'footer',
     data: {
+      brand: {
+        description: 'Boutique resort experience in Bali.',
+        tagline: 'Calm island hospitality.',
+      },
       shortDescription: 'Boutique resort experience in Bali.',
+      contact: {
+        phone: '+62 823 8635 7012',
+        email: 'hello@example.com',
+        whatsapp: '+62 823 8635 7012',
+        address: 'Nusa Ceningan, Bali, Indonesia',
+      },
       contactInformation: {
         phone: '+62 823 8635 7012',
         email: 'hello@example.com',
         whatsApp: '+62 823 8635 7012',
         address: 'Nusa Ceningan, Bali, Indonesia',
       },
+      navigationColumns: [
+        {
+          title: 'Explore',
+          links: [
+            { label: 'Home', url: '/', openInNewTab: false },
+            { label: 'About Us', url: '/about-us', openInNewTab: false },
+            { label: 'Rooms', url: '/rooms', openInNewTab: false },
+            { label: 'Services', url: '/services', openInNewTab: false },
+          ],
+        },
+        {
+          title: 'Concierge',
+          links: [
+            { label: 'Reservation', url: '/reservation', openInNewTab: false },
+            { label: 'Contact', url: '/contact', openInNewTab: false },
+            { label: 'Blog', url: '/blog', openInNewTab: false },
+          ],
+        },
+      ],
       quickLinks: [
         { label: 'Rooms', url: '/rooms', openInNewTab: false },
         { label: 'Contact', url: '/contact', openInNewTab: false },
       ],
+      socialLinks: [
+        { platform: 'whatsapp', label: 'WhatsApp', url: 'https://wa.me/6282386357012', openInNewTab: true },
+      ],
+      legalLinks: [
+        { label: 'Terms', url: '/terms', openInNewTab: false },
+        { label: 'Privacy', url: '/privacy', openInNewTab: false },
+        { label: 'Cookies', url: '/cookies', openInNewTab: false },
+      ],
+      bookingCta: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
       copyrightText: 'Copyright Villa Resort. All rights reserved.',
       termsURL: '/terms',
       privacyURL: '/privacy',
@@ -344,6 +387,76 @@ const main = async () => {
   })
 
   await payload.updateGlobal({
+    slug: 'rooms-page',
+    data: {
+      heroEyebrow: 'Rooms',
+      heroHeading: 'Our Rooms',
+      heroDescription: 'Discover a collection of curated island sanctuaries designed for deep rest and quiet elegance.',
+      heroImage: image.id,
+      introHeading: 'Signature Collection',
+      introDescription: 'Stay where island calm meets personal villa comfort.',
+      listingHeading: 'Stay where island calm meets personal villa comfort.',
+      listingDescription: 'Choose the room style that best matches your stay rhythm.',
+      listingCTA: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
+      seo: {
+        metaTitle: 'Rooms and Suites',
+        metaDescription: 'Explore calm villa rooms and suites for your island stay.',
+        openGraphImage: image.id,
+      },
+    },
+  })
+
+  await payload.updateGlobal({
+    slug: 'services-page',
+    data: {
+      heroEyebrow: 'Services',
+      heroHeading: 'Bespoke Sanctuary Services',
+      heroDescription: 'Experience the art of quiet luxury where every detail is curated for your island rhythm.',
+      heroImage: image.id,
+      introHeading: 'The Villa Ceningan Way',
+      introDescription:
+        'In the stillness of the island, a stay becomes more than a room. Our services are designed to restore ease, rhythm, and quiet pleasure.',
+      listingHeading: 'Signature Services',
+      listingDescription: 'Curated services for dining, wellness, transit, and concierge support.',
+      finalCTA: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
+      seo: {
+        metaTitle: 'Services',
+        metaDescription: 'Discover tailored island services, concierge support, transfers, and villa comforts.',
+        openGraphImage: image.id,
+      },
+    },
+  })
+
+  await payload.updateGlobal({
+    slug: 'blog-page',
+    data: {
+      heroEyebrow: 'Featured Story',
+      heroHeading: 'The Art of Stillness: Finding Quiet Luxury by the Water',
+      heroDescription: 'A journal on slow island mornings, considered villa rituals, and calm details.',
+      heroImage: image.id,
+      introHeading: 'Island Journal',
+      introDescription: 'Travel notes, villa rituals, and slower stories from Villa Ceningan.',
+      listingHeading: 'Latest Stories',
+      listingDescription: 'Read travel notes, culinary stories, wellness rituals, and behind-the-scenes updates.',
+      seo: {
+        metaTitle: 'Blog',
+        metaDescription: 'Read travel notes, villa rituals, and island stories from Villa Ceningan.',
+        openGraphImage: image.id,
+      },
+    },
+  })
+
+  await payload.updateGlobal({
     slug: 'about-page',
     data: {
       heroHeading: 'About Villa Resort',
@@ -422,6 +535,7 @@ const main = async () => {
         title: 'Terms of Service',
         summary: 'Terms for reservation inquiries and website usage.',
         updatedAtLabel: 'July 29, 2026',
+        updatedAt: new Date('2026-07-29').toISOString(),
         sections: [
           {
             title: 'Reservation inquiries',
@@ -434,6 +548,7 @@ const main = async () => {
         title: 'Privacy Policy',
         summary: 'How guest inquiry information is handled.',
         updatedAtLabel: 'July 29, 2026',
+        updatedAt: new Date('2026-07-29').toISOString(),
         sections: [
           {
             title: 'Information we collect',
@@ -446,6 +561,7 @@ const main = async () => {
         title: 'Cookies Policy',
         summary: 'How browser technologies should be handled on the website.',
         updatedAtLabel: 'July 29, 2026',
+        updatedAt: new Date('2026-07-29').toISOString(),
         sections: [
           {
             title: 'Essential cookies',

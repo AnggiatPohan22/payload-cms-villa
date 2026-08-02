@@ -29,7 +29,7 @@ type PropertyFallback = {
 
 type NavigationFallback = {
   primaryNavigation: Array<{ href: string; label: string }>
-  footerNavigation: Array<{ links: Array<{ href: string; label: string }> }>
+  footerNavigation: Array<{ title: string; links: Array<{ href: string; label: string }> }>
 }
 
 type FaqFallback = {
@@ -481,13 +481,36 @@ const main = async () => {
     slug: 'footer',
     overrideAccess: true,
     data: {
+      brand: {
+        description: property.description,
+        tagline: property.tagline,
+      },
       shortDescription: property.description,
+      contact: {
+        phone: property.phone,
+        email: property.email,
+        whatsapp: property.whatsapp,
+        address: property.address,
+      },
       contactInformation: {
         phone: property.phone,
         email: property.email,
         whatsApp: property.whatsapp,
         address: property.address,
       },
+      navigationColumns: navigationModule.footerNavigation.map((group) => ({
+        title: group.title,
+        links: group.links.map((link) => ({
+          label: link.label,
+          url: link.href,
+          openInNewTab: link.href.startsWith('http'),
+        })),
+      })),
+      socialLinks: [
+        { platform: 'instagram', label: 'Instagram', url: '/contact', openInNewTab: false },
+        { platform: 'whatsapp', label: 'WhatsApp', url: `https://wa.me/${property.whatsapp}`, openInNewTab: true },
+        { platform: 'other', label: 'Share', url: '/contact', openInNewTab: false },
+      ],
       quickLinks: navigationModule.footerNavigation.flatMap((group) =>
         group.links
           .filter((link) => link.href.startsWith('/') || link.href.startsWith('http'))
@@ -497,6 +520,17 @@ const main = async () => {
             openInNewTab: link.href.startsWith('http'),
           })),
       ),
+      legalLinks: [
+        { label: 'Terms', url: '/terms', openInNewTab: false },
+        { label: 'Privacy', url: '/privacy', openInNewTab: false },
+        { label: 'Cookies', url: '/cookies', openInNewTab: false },
+      ],
+      bookingCta: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
       copyrightText: `Copyright (c) 2026 ${property.name}. All rights reserved.`,
       termsURL: '/terms',
       privacyURL: '/privacy',
@@ -793,6 +827,79 @@ const main = async () => {
   })
 
   await payload.updateGlobal({
+    slug: 'rooms-page',
+    overrideAccess: true,
+    data: {
+      heroEyebrow: 'Rooms',
+      heroHeading: 'Our Rooms',
+      heroDescription: 'Discover a collection of curated island sanctuaries designed for deep rest and quiet elegance.',
+      heroImage,
+      introHeading: 'Signature Collection',
+      introDescription: 'Stay where island calm meets personal villa comfort.',
+      listingHeading: 'Stay where island calm meets personal villa comfort.',
+      listingDescription: 'Choose the room style that best matches your stay rhythm.',
+      listingCTA: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
+      seo: {
+        metaTitle: 'Rooms and Suites',
+        metaDescription: `Explore the refined room collection available at ${property.name}.`,
+        openGraphImage: heroImage,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'services-page',
+    overrideAccess: true,
+    data: {
+      heroEyebrow: 'Services',
+      heroHeading: 'Bespoke Sanctuary Services',
+      heroDescription: 'Experience the art of quiet luxury where every detail is curated for your island rhythm.',
+      heroImage: await ensureMedia(payload, '/assets/img/services-3.webp', `${property.name} services page hero`, 'hero'),
+      introHeading: 'The Villa Ceningan Way',
+      introDescription:
+        'In the stillness of the island, a stay becomes more than a room. Our services are designed to restore ease, rhythm, and quiet pleasure.',
+      listingHeading: 'Signature Services',
+      listingDescription: 'Curated services for dining, wellness, transit, and concierge support.',
+      finalCTA: {
+        label: 'Start Reservation',
+        url: '/reservation',
+        openInNewTab: false,
+        variant: 'primary',
+      },
+      seo: {
+        metaTitle: 'Services',
+        metaDescription: `Discover tailored island services, concierge support, transfers, and villa comforts at ${property.name}.`,
+        openGraphImage: heroImage,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
+    slug: 'blog-page',
+    overrideAccess: true,
+    data: {
+      heroEyebrow: blogModule.featuredArticle.category,
+      heroHeading: blogModule.featuredArticle.title,
+      heroDescription: blogModule.featuredArticle.excerpt,
+      heroImage: await ensureMedia(payload, blogModule.featuredArticle.image, `${blogModule.featuredArticle.title} hero`, 'hero'),
+      introHeading: 'Island Journal',
+      introDescription: 'Travel notes, villa rituals, and slower stories from Villa Ceningan.',
+      listingHeading: 'Latest Stories',
+      listingDescription: 'Read travel notes, culinary stories, wellness rituals, and behind-the-scenes updates.',
+      seo: {
+        metaTitle: 'Blog',
+        metaDescription: `Read travel notes, villa rituals, and island stories from ${property.name}.`,
+        openGraphImage: heroImage,
+      },
+    } as never,
+  })
+
+  await payload.updateGlobal({
     slug: 'about-page',
     overrideAccess: true,
     data: {
@@ -899,6 +1006,7 @@ const main = async () => {
         title: page.title,
         summary: page.summary,
         updatedAtLabel: page.updatedAt,
+        updatedAt: page.updatedAt ? new Date(page.updatedAt).toISOString() : undefined,
         sections: page.sections.map((section) => ({
           title: section.title,
           body: section.body.map((paragraph: string) => ({ paragraph })),

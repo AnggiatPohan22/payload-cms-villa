@@ -8,7 +8,7 @@ export const ReservationPage: GlobalConfig = {
   slug: 'reservation-page',
   label: 'Reservation Page',
   admin: {
-    group: 'Website',
+    group: 'Pages',
   },
   access: {
     read: () => true,
