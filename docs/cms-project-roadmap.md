@@ -33,7 +33,7 @@ Kondisi saat ini:
 - Frontend local integration mencakup `/`, `/villa`, `/rooms`, `/rooms/[slug]`, `/services`, `/services/[slug]`, `/gallery`, `/reservation`, dan `/blog`.
 - Phase 6B content seeding dari fallback data frontend sudah ditambahkan melalui `corepack pnpm run seed:frontend`.
 - Phase 6C CMS sync dan media rendering sudah diperbaiki: home-page hero mapping/cache/media URL/frontend image config diperbaiki di frontend, dan CMS local media route `/api/media/file/:filename` ditambahkan untuk serve upload lokal.
-- Phase 7 Automated Tests and Hardening sudah dimulai dengan Node.js built-in test runner untuk public API, media route checks, dan authenticated role access checks.
+- Phase 7 Automated Tests and Hardening sudah berjalan dengan Node.js built-in test runner untuk public API, media route checks, authenticated role access checks, promotion lifecycle, upload validation, dan CORS checks.
 
 Verifikasi terakhir:
 
@@ -64,6 +64,7 @@ Hasil:
 - CMS media file checks untuk `/api/media/file/:filename` sudah mengembalikan `200 image/webp` setelah route lokal ditambahkan.
 - Phase 7 public API command berhasil: `corepack pnpm run test:public-api` dengan 7 tests pass.
 - Phase 7 authenticated role command berhasil: `corepack pnpm run test:roles` dengan 4 tests pass.
+- Phase 7 hardening command berhasil: `corepack pnpm run test:hardening` dengan 6 tests pass.
 
 ## Phase 0 - Git and Branch Safety
 
@@ -563,7 +564,7 @@ Gate selesai:
 
 ## Phase 7 - Automated Tests and Hardening
 
-Status: in progress.
+Status: complete for local hardening coverage / monitor during deployment preparation.
 
 Tujuan:
 
@@ -583,9 +584,10 @@ Checklist:
 - [x] Test Editor access terhadap content sesuai policy aktual project.
 - [x] Test unauthenticated user tidak dapat create/update/delete protected content.
 - [x] Test admin tidak bisa mengubah Super Admin.
-- [ ] Test promotion aktif dan expired.
-- [ ] Test upload validation.
-- [ ] Test CORS allowed origin.
+- [x] Test promotion aktif dan expired.
+- [x] Test upload validation.
+- [x] Test CORS allowed origin.
+- [x] Test CORS unconfigured origin tidak direfleksikan.
 - [x] Test `/api/users` tetap `403 Forbidden` untuk public request.
 - [x] Test `/api/media/file/:filename` mengembalikan `200` untuk file image valid.
 - [x] Test `/api/media/file/:filename` mengembalikan `404` untuk path traversal atau extension unsupported.
@@ -598,7 +600,8 @@ Prioritas awal Phase 7:
 2. Public API dan draft leakage tests sudah dibuat di `tests/integration/public-api.test.mjs`.
 3. Media route tests sudah dibuat karena route ini menjadi dependency langsung untuk frontend images.
 4. Authenticated role tests untuk editor/admin/super-admin sudah dibuat di `tests/integration/authenticated-roles.test.mjs`.
-5. Setelah role tests, lanjut ke CORS, upload validation, dan promotion date behavior.
+5. Promotion lifecycle, upload validation, dan CORS checks sudah dibuat di `tests/integration/phase-7-hardening.test.mjs`.
+6. Next step setelah Phase 7 adalah deployment preparation, dengan keputusan khusus apakah expired promotions tetap dikelola via query/frontend atau harus enforced di CMS access control.
 
 Gate selesai:
 
@@ -630,6 +633,24 @@ Hasil:
 - 4 tests pass.
 - 0 tests failed.
 - Super Admin, Admin, Editor, dan unauthenticated protected mutation behavior sudah tercakup.
+
+Verifikasi hardening Phase 7:
+
+```powershell
+corepack pnpm run test:hardening
+```
+
+Hasil:
+
+- 6 tests pass.
+- 0 tests failed.
+- Promotion active/expired fixtures, upload validation, dan CORS allowed/disallowed origin checks sudah tercakup.
+
+Catatan promotion behavior:
+
+- Public promotions saat ini masih memakai kontrak status-based.
+- Promotion dengan `status=published` tetap returned walaupun `endDate` sudah lewat.
+- Jika expired promotion harus otomatis hilang dari public API, perlu perubahan policy/query eksplisit dan update kontrak frontend.
 
 ## Phase 8 - Deployment Preparation
 
@@ -717,11 +738,9 @@ Gate selesai:
 
 Step berikutnya yang paling aman:
 
-1. Mulai Phase 7 dengan audit test runner dan test strategy untuk Payload 3 + Next App Router.
-2. Tambahkan promotion active/expired behavior tests.
-3. Tambahkan upload validation tests untuk allowed MIME, unsupported MIME, dan batas ukuran.
-4. Tambahkan CORS allowed/disallowed origin checks.
-5. Setelah test hardening Phase 7 yang tersisa hijau, baru lanjut Phase 8 deployment preparation.
+1. Buat command konsolidasi opsional untuk menjalankan semua suite Phase 7 jika diinginkan.
+2. Putuskan policy promotion expiry sebelum deployment: tetap frontend/query-managed atau CMS-enforced.
+3. Lanjut Phase 8 Deployment Preparation setelah keputusan promotion expiry dicatat.
 
 CMS bisa mulai dilihat saat Phase 2, setelah database lokal dan `.env` siap.
 

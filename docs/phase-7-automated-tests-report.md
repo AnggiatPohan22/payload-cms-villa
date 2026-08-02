@@ -33,6 +33,12 @@ corepack pnpm run test:roles
 
 The command prepares temporary role fixtures with Payload Local API, then runs HTTP-based role tests against the local CMS REST API.
 
+Promotion, upload validation, and CORS hardening are now covered by:
+
+```powershell
+corepack pnpm run test:hardening
+```
+
 Optional CMS URL override:
 
 ```powershell
@@ -54,6 +60,11 @@ corepack pnpm run test:public-api
 - Editor cannot manage users.
 - Editor can create/update content and cannot delete content under current policy.
 - Unauthenticated users cannot create, update, or delete protected content.
+- Promotion active/expired fixtures are covered under the current status-based public contract.
+- Supported image uploads are accepted.
+- Unsupported MIME uploads and uploads larger than 5MB are rejected.
+- Allowed frontend CORS origin is reflected.
+- Unconfigured CORS origin is not reflected.
 
 ## Verification Result
 
@@ -89,6 +100,22 @@ fail 0
 skipped 0
 ```
 
+Promotion, upload validation, and CORS tests:
+
+```powershell
+corepack pnpm run test:hardening
+```
+
+Result:
+
+```text
+tests 6
+suites 3
+pass 6
+fail 0
+skipped 0
+```
+
 ## Requirements
 
 Before running:
@@ -105,7 +132,6 @@ These are local integration tests. Public API tests are read-only. Authenticated
 
 ## Remaining Phase 7 Work
 
-- Add upload validation tests with a controlled fixture.
-- Add CORS origin tests.
-- Add promotion date behavior tests.
-- Decide whether later authenticated tests should stay HTTP-based or move to Payload Local API fixtures.
+- Consider a consolidated `test:phase7` command for all Phase 7 suites.
+- Decide whether promotion expiry should remain status/query based or become enforced by CMS access control.
+- Add browser-level admin smoke coverage only if the `/admin` hydration warning remains reproducible.

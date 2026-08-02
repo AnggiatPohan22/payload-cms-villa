@@ -8,7 +8,7 @@ const cmsBaseUrl = (process.env.CMS_TEST_URL || 'http://localhost:3000').replace
 
 const createdFaqIds = []
 const createdUserIds = []
-const credentialsPath = join(tmpdir(), 'payload-cms-villa-phase7-role-test.json')
+const credentialsPath = join(tmpdir(), 'payload-cms-villa-phase7-roles-test.json')
 
 let superAdmin = null
 let admin = null

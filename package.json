@@ -15,7 +15,8 @@
     "seed": "payload run src/seed.ts",
     "seed:frontend": "payload run src/scripts/seedFrontendFallback.ts",
     "test:public-api": "node --test tests/integration/public-api.test.mjs",
-    "test:roles": "node node_modules/.pnpm/tsx@4.22.4/node_modules/tsx/dist/cli.mjs tests/integration/setupAuthenticatedRoles.ts && node --test tests/integration/authenticated-roles.test.mjs",
+    "test:roles": "node node_modules/.pnpm/tsx@4.22.4/node_modules/tsx/dist/cli.mjs tests/integration/setupAuthenticatedRoles.ts roles && node --test tests/integration/authenticated-roles.test.mjs",
+    "test:hardening": "node node_modules/.pnpm/tsx@4.22.4/node_modules/tsx/dist/cli.mjs tests/integration/setupAuthenticatedRoles.ts hardening && node --test tests/integration/phase-7-hardening.test.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

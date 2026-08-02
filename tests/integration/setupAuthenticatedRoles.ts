@@ -26,7 +26,8 @@ const loadDotEnv = async () => {
   }
 }
 
-const credentialsPath = path.join(os.tmpdir(), 'payload-cms-villa-phase7-role-test.json')
+const suiteName = process.argv[2] === 'hardening' ? 'hardening' : 'roles'
+const credentialsPath = path.join(os.tmpdir(), `payload-cms-villa-phase7-${suiteName}-test.json`)
 const suffix = `${Date.now()}-${Math.random().toString(16).slice(2)}`
 const email = `phase7-super-admin-${suffix}@example.test`
 const password = `Phase7-super-admin-${suffix}!`
