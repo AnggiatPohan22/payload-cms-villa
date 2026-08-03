@@ -58,17 +58,34 @@ GET /api/faqs?where[status][equals]=published&sort=sortOrder
 
 For detail pages, request by `slug` and include `where[status][equals]=published`. Use `depth=1` when media relations are needed, and raise it only for sections that require nested relation data.
 
-## Phase 7.5 Frontend Follow-up
+## Phase 7.6 / 7.7 Frontend Follow-up
 
-The CMS now exposes page-level Globals for `/rooms`, `/services`, and `/blog`, plus a richer Footer Global.
+The CMS now exposes page-level Globals for `/rooms`, `/services`, and `/blog`, plus richer Header/Footer/Site Settings Globals. The separate frontend branch `phase-6-cms-integration` also maps Home Page sections to CMS fields.
 
-Frontend follow-up in the separate `C:\laragon\www\villa-ceningan` repo should add mappers for:
+Frontend Home should read:
 
 ```text
-GET /api/globals/rooms-page?depth=1
-GET /api/globals/services-page?depth=1
-GET /api/globals/blog-page?depth=1
-GET /api/globals/footer?depth=1
+GET /api/globals/home-page?depth=2
 ```
 
-The current frontend branch `phase-6-cms-integration` still uses collection data for rooms/services/blog lists and fallback/static copy for those page heroes and footer layout. Keep fallback data in place.
+Home Page section contract:
+
+- `hero`
+- `bookingPreview`
+- `introduction`
+- `signatureExperiences`
+- `typeOfRooms`
+- `testimonialNote`
+- `journalPreview`
+- `contactPreview`
+
+Do not add CMS Home section groups that do not exist on the frontend Home page. Use `button` for regular section buttons/links; reserve CTA naming only for frontend sections that are actually CTA sections.
+
+Phase 7.8 applies the same rule to About and Rooms:
+
+- `/about-us` reads `about-page` groups: `hero`, `story`, `principles`, `team`, and `finalCTA`.
+- `/rooms` reads `rooms-page` groups: `hero`, `availabilityBar`, and `roomCollection`.
+- Normal navigation links inside sections use `button`; only actual CTA sections use CTA naming.
+- Legacy flat fields are fallback only and should not be reintroduced to the admin interface.
+
+The current frontend branch `phase-6-cms-integration` keeps fallback data in place and prefers CMS only when the Global is published and structurally valid.

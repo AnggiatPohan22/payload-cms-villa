@@ -1289,6 +1289,10 @@ export interface Footer {
 export interface HomePage {
   id: number;
   hero: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
     eyebrow?: string | null;
     heading: string;
     description?: string | null;
@@ -1309,11 +1313,45 @@ export interface HomePage {
     active?: boolean | null;
     sortOrder?: number | null;
   };
+  bookingPreview?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    sectionAriaLabel?: string | null;
+    formAriaLabel?: string | null;
+    checkInLabel?: string | null;
+    checkOutLabel?: string | null;
+    guestsLabel?: string | null;
+    promotionLinkLabel?: string | null;
+    promotionLinkURL?: string | null;
+    submitButtonLabel?: string | null;
+    submitButtonURL?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
   introduction?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
     heading?: string | null;
     description?: string | null;
     image?: (number | null) | Media;
-    cta?: {
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  signatureExperiences?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    selectedServices?: (number | Service)[] | null;
+    button?: {
       label?: string | null;
       url?: string | null;
       openInNewTab?: boolean | null;
@@ -1322,52 +1360,43 @@ export interface HomePage {
     active?: boolean | null;
     sortOrder?: number | null;
   };
-  featuredRooms?: {
+  typeOfRooms?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
     heading?: string | null;
     description?: string | null;
     selectedRooms?: (number | Room)[] | null;
     active?: boolean | null;
     sortOrder?: number | null;
   };
-  signatureExperiences?: {
-    heading?: string | null;
-    description?: string | null;
-    selectedServices?: (number | Service)[] | null;
-    active?: boolean | null;
-    sortOrder?: number | null;
-  };
-  facilitiesOverview?: {
-    heading?: string | null;
-    description?: string | null;
-    selectedFacilities?: (number | Facility)[] | null;
-    active?: boolean | null;
-    sortOrder?: number | null;
-  };
-  galleryPreview?: {
-    heading?: string | null;
-    description?: string | null;
-    selectedGalleryItems?: (number | Gallery)[] | null;
-    cta?: {
-      label?: string | null;
-      url?: string | null;
-      openInNewTab?: boolean | null;
-      variant?: ('primary' | 'secondary' | 'text') | null;
-    };
-    active?: boolean | null;
-    sortOrder?: number | null;
-  };
-  promotionSection?: {
-    heading?: string | null;
-    description?: string | null;
-    selectedPromotions?: (number | Promotion)[] | null;
+  /**
+   * Placeholder note only. This frontend section will use Google Reviews or another review platform later.
+   */
+  testimonialNote?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    /**
+     * This keeps the Home CMS section order aligned with frontend while avoiding a temporary manual testimonial source.
+     */
+    note?: string | null;
     active?: boolean | null;
     sortOrder?: number | null;
   };
   journalPreview?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
     heading?: string | null;
     description?: string | null;
     selectedArticles?: (number | Blog)[] | null;
-    cta?: {
+    button?: {
       label?: string | null;
       url?: string | null;
       openInNewTab?: boolean | null;
@@ -1376,12 +1405,21 @@ export interface HomePage {
     active?: boolean | null;
     sortOrder?: number | null;
   };
-  finalCTA?: {
+  contactPreview?: {
+    /**
+     * Editable label for staff/admin only. Use this to match the visible frontend section purpose without changing code structure.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
     heading?: string | null;
     description?: string | null;
-    buttonLabel?: string | null;
-    buttonURL?: string | null;
-    backgroundImage?: (number | null) | Media;
+    locationHeading?: string | null;
+    address?: string | null;
+    emailLabel?: string | null;
+    email?: string | null;
+    phoneLabel?: string | null;
+    phone?: string | null;
+    mapEmbedURL?: string | null;
     active?: boolean | null;
     sortOrder?: number | null;
   };
@@ -1395,60 +1433,89 @@ export interface HomePage {
  */
 export interface AboutPage {
   id: number;
-  heroHeading: string;
-  heroDescription?: string | null;
-  heroImage?: (number | null) | Media;
-  introductionHeading?: string | null;
-  introductionContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  storyContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  supportingImages?:
-    | {
-        image: number | Media;
-        alt: string;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  values?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  hero: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading: string;
+    description?: string | null;
+    image?: (number | null) | Media;
+    scrollCueLabel?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  story?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    paragraphs?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    image?: (number | null) | Media;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  principles?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    items?:
+      | {
+          title: string;
+          description?: string | null;
+          image?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  team?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading?: string | null;
+    quote?: string | null;
+    members?:
+      | {
+          name: string;
+          role?: string | null;
+          description?: string | null;
+          image?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
   finalCTA?: {
-    label?: string | null;
-    url?: string | null;
-    openInNewTab?: boolean | null;
-    variant?: ('primary' | 'secondary' | 'text') | null;
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading?: string | null;
+    image?: (number | null) | Media;
+    button?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+      variant?: ('primary' | 'secondary' | 'text') | null;
+    };
+    active?: boolean | null;
+    sortOrder?: number | null;
   };
   seo?: {
     metaTitle?: string | null;
@@ -1468,19 +1535,58 @@ export interface AboutPage {
  */
 export interface RoomsPage {
   id: number;
-  heroEyebrow?: string | null;
-  heroHeading: string;
-  heroDescription?: string | null;
-  heroImage?: (number | null) | Media;
-  introHeading?: string | null;
-  introDescription?: string | null;
-  listingHeading?: string | null;
-  listingDescription?: string | null;
-  listingCTA?: {
-    label?: string | null;
-    url?: string | null;
-    openInNewTab?: boolean | null;
-    variant?: ('primary' | 'secondary' | 'text') | null;
+  hero: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading: string;
+    description?: string | null;
+    image?: (number | null) | Media;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  availabilityBar?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    sectionAriaLabel?: string | null;
+    formAriaLabel?: string | null;
+    checkInLabel?: string | null;
+    checkOutLabel?: string | null;
+    guestsLabel?: string | null;
+    promotionLinkLabel?: string | null;
+    promotionLinkURL?: string | null;
+    submitButtonLabel?: string | null;
+    submitButtonURL?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  roomCollection?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    ratingSymbol?: string | null;
+    startFromLabel?: string | null;
+    nightSuffixLabel?: string | null;
+    statusLabel?: string | null;
+    depositLabel?: string | null;
+    bedsLabel?: string | null;
+    passengerLabel?: string | null;
+    detailButtonLabel?: string | null;
+    button?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+      variant?: ('primary' | 'secondary' | 'text') | null;
+    };
+    active?: boolean | null;
+    sortOrder?: number | null;
   };
   seo?: {
     metaTitle?: string | null;
@@ -1911,6 +2017,7 @@ export interface HomePageSelect<T extends boolean = true> {
   hero?:
     | T
     | {
+        sectionName?: T;
         eyebrow?: T;
         heading?: T;
         description?: T;
@@ -1935,57 +2042,42 @@ export interface HomePageSelect<T extends boolean = true> {
         active?: T;
         sortOrder?: T;
       };
-  introduction?:
+  bookingPreview?:
     | T
     | {
-        heading?: T;
-        description?: T;
-        image?: T;
-        cta?:
-          | T
-          | {
-              label?: T;
-              url?: T;
-              openInNewTab?: T;
-              variant?: T;
-            };
+        sectionName?: T;
+        sectionAriaLabel?: T;
+        formAriaLabel?: T;
+        checkInLabel?: T;
+        checkOutLabel?: T;
+        guestsLabel?: T;
+        promotionLinkLabel?: T;
+        promotionLinkURL?: T;
+        submitButtonLabel?: T;
+        submitButtonURL?: T;
         active?: T;
         sortOrder?: T;
       };
-  featuredRooms?:
+  introduction?:
     | T
     | {
+        sectionName?: T;
+        eyebrow?: T;
         heading?: T;
         description?: T;
-        selectedRooms?: T;
+        image?: T;
         active?: T;
         sortOrder?: T;
       };
   signatureExperiences?:
     | T
     | {
+        sectionName?: T;
+        eyebrow?: T;
         heading?: T;
         description?: T;
         selectedServices?: T;
-        active?: T;
-        sortOrder?: T;
-      };
-  facilitiesOverview?:
-    | T
-    | {
-        heading?: T;
-        description?: T;
-        selectedFacilities?: T;
-        active?: T;
-        sortOrder?: T;
-      };
-  galleryPreview?:
-    | T
-    | {
-        heading?: T;
-        description?: T;
-        selectedGalleryItems?: T;
-        cta?:
+        button?:
           | T
           | {
               label?: T;
@@ -1996,22 +2088,34 @@ export interface HomePageSelect<T extends boolean = true> {
         active?: T;
         sortOrder?: T;
       };
-  promotionSection?:
+  typeOfRooms?:
     | T
     | {
+        sectionName?: T;
+        eyebrow?: T;
         heading?: T;
         description?: T;
-        selectedPromotions?: T;
+        selectedRooms?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  testimonialNote?:
+    | T
+    | {
+        sectionName?: T;
+        note?: T;
         active?: T;
         sortOrder?: T;
       };
   journalPreview?:
     | T
     | {
+        sectionName?: T;
+        eyebrow?: T;
         heading?: T;
         description?: T;
         selectedArticles?: T;
-        cta?:
+        button?:
           | T
           | {
               label?: T;
@@ -2022,14 +2126,20 @@ export interface HomePageSelect<T extends boolean = true> {
         active?: T;
         sortOrder?: T;
       };
-  finalCTA?:
+  contactPreview?:
     | T
     | {
+        sectionName?: T;
+        eyebrow?: T;
         heading?: T;
         description?: T;
-        buttonLabel?: T;
-        buttonURL?: T;
-        backgroundImage?: T;
+        locationHeading?: T;
+        address?: T;
+        emailLabel?: T;
+        email?: T;
+        phoneLabel?: T;
+        phone?: T;
+        mapEmbedURL?: T;
         active?: T;
         sortOrder?: T;
       };
@@ -2043,34 +2153,86 @@ export interface HomePageSelect<T extends boolean = true> {
  * via the `definition` "about-page_select".
  */
 export interface AboutPageSelect<T extends boolean = true> {
-  heroHeading?: T;
-  heroDescription?: T;
-  heroImage?: T;
-  introductionHeading?: T;
-  introductionContent?: T;
-  storyContent?: T;
-  supportingImages?:
+  hero?:
     | T
     | {
-        image?: T;
-        alt?: T;
-        caption?: T;
-        id?: T;
-      };
-  values?:
-    | T
-    | {
-        title?: T;
+        sectionName?: T;
+        eyebrow?: T;
+        heading?: T;
         description?: T;
-        id?: T;
+        image?: T;
+        scrollCueLabel?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  story?:
+    | T
+    | {
+        sectionName?: T;
+        eyebrow?: T;
+        heading?: T;
+        paragraphs?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  principles?:
+    | T
+    | {
+        sectionName?: T;
+        eyebrow?: T;
+        heading?: T;
+        description?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              image?: T;
+              id?: T;
+            };
+        active?: T;
+        sortOrder?: T;
+      };
+  team?:
+    | T
+    | {
+        sectionName?: T;
+        heading?: T;
+        quote?: T;
+        members?:
+          | T
+          | {
+              name?: T;
+              role?: T;
+              description?: T;
+              image?: T;
+              id?: T;
+            };
+        active?: T;
+        sortOrder?: T;
       };
   finalCTA?:
     | T
     | {
-        label?: T;
-        url?: T;
-        openInNewTab?: T;
-        variant?: T;
+        sectionName?: T;
+        heading?: T;
+        image?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+              variant?: T;
+            };
+        active?: T;
+        sortOrder?: T;
       };
   seo?:
     | T
@@ -2092,21 +2254,57 @@ export interface AboutPageSelect<T extends boolean = true> {
  * via the `definition` "rooms-page_select".
  */
 export interface RoomsPageSelect<T extends boolean = true> {
-  heroEyebrow?: T;
-  heroHeading?: T;
-  heroDescription?: T;
-  heroImage?: T;
-  introHeading?: T;
-  introDescription?: T;
-  listingHeading?: T;
-  listingDescription?: T;
-  listingCTA?:
+  hero?:
     | T
     | {
-        label?: T;
-        url?: T;
-        openInNewTab?: T;
-        variant?: T;
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        image?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  availabilityBar?:
+    | T
+    | {
+        sectionName?: T;
+        sectionAriaLabel?: T;
+        formAriaLabel?: T;
+        checkInLabel?: T;
+        checkOutLabel?: T;
+        guestsLabel?: T;
+        promotionLinkLabel?: T;
+        promotionLinkURL?: T;
+        submitButtonLabel?: T;
+        submitButtonURL?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  roomCollection?:
+    | T
+    | {
+        sectionName?: T;
+        eyebrow?: T;
+        heading?: T;
+        description?: T;
+        ratingSymbol?: T;
+        startFromLabel?: T;
+        nightSuffixLabel?: T;
+        statusLabel?: T;
+        depositLabel?: T;
+        bedsLabel?: T;
+        passengerLabel?: T;
+        detailButtonLabel?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+              variant?: T;
+            };
+        active?: T;
+        sortOrder?: T;
       };
   seo?:
     | T

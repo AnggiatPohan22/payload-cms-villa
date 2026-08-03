@@ -48,6 +48,41 @@ Phase 7.5 added safer CMS control for listing/page-level frontend copy before de
 - Footer global: extended with `brand`, `contact`, `navigationColumns`, richer `socialLinks`, `legalLinks`, and `bookingCta` while keeping existing fields for compatibility.
 - Legal Pages global: existing terms/privacy/cookies structure retained and extended with machine-readable `updatedAt` date next to `updatedAtLabel`.
 
+## Phase 7.7 Home Page Cleanup Rules
+
+Home Page global must mirror the current frontend Home route section order. Current Home sections are:
+
+- `hero`: first viewport hero content, background image, and hero CTAs.
+- `bookingPreview`: availability form labels and button/link labels used by the Home booking preview bar.
+- `introduction`: the ocean-side comfort intro section, including editable eyebrow, heading, description, and image.
+- `signatureExperiences`: service preview section, including editable eyebrow, heading, description, selected services, and `button`.
+- `typeOfRooms`: room type preview section, including editable eyebrow, heading, description, and selected rooms.
+- `testimonialNote`: admin note only. The frontend testimonial section is intentionally reserved for Google Reviews or another review platform integration later.
+- `journalPreview`: blog preview section, including editable eyebrow, heading, description, selected articles, and `button`.
+- `contactPreview`: Home contact preview section, including editable eyebrow, heading, address/contact labels, contact values, and map embed URL.
+
+Home Page no longer exposes `facilitiesOverview`, `galleryPreview`, or `promotionSection` because those sections are not currently rendered on the frontend Home page. Future agents must not add page section groups to CMS until the matching frontend section exists.
+
+Use `button` for normal section navigation links. Reserve `CTA` naming only for sections that are actually presented as CTA sections in the frontend.
+
+## Phase 7.8 About and Rooms Page Cleanup Rules
+
+About Page global now mirrors `/about-us` frontend section order:
+
+- `hero`: hero eyebrow, heading, description, image, and scroll cue label.
+- `story`: story eyebrow, heading, editable paragraphs, and image.
+- `principles`: section eyebrow, heading, description, and editable principle cards.
+- `team`: team heading, quote, and editable team member cards.
+- `finalCTA`: actual CTA section with heading, image, and `button`.
+
+Rooms Page global now mirrors `/rooms` frontend section order:
+
+- `hero`: first viewport heading, description, and image.
+- `availabilityBar`: availability form labels, promotion link label/URL, and submit button label/URL.
+- `roomCollection`: room listing eyebrow, heading, description, room card labels, detail button label, and reservation `button`.
+
+Do not re-add legacy flat fields such as `heroHeading`, `introHeading`, `listingCTA`, `values`, or About supporting image fields to the admin UI. They are retained only as mapper fallback while older content is migrated.
+
 Admin sidebar groups now use:
 
 - `Pages`: fixed page Globals.

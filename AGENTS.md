@@ -156,6 +156,11 @@ Rules:
 
 - Keep schema modular under `src/collections`, `src/globals`, `src/fields`, `src/access`, `src/hooks`, and `src/config`.
 - Reuse field helpers instead of duplicating field definitions.
+- Page Globals must mirror the actual frontend page section order. Do not put section groups in CMS that do not exist in the frontend.
+- Every visible frontend section controlled by CMS must expose all editable text, image, form label, link label, link URL, and section label fields needed by that section.
+- Use clear field names that match the displayed purpose. Use `button` for normal section buttons/links, not `cta`, unless the frontend section itself is explicitly a CTA/final CTA section.
+- Each CMS page section should include an editable `sectionName` or equivalent admin label so staff can rename the section purpose without changing frontend code.
+- If a frontend section is intentionally sourced outside CMS, add an admin note field/description instead of pretending it is editable CMS content.
 - Use TypeScript-safe naming.
 - Do not disable TypeScript checking to pass build.
 - Do not disable ESLint to pass build.

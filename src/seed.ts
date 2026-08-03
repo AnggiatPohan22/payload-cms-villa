@@ -220,7 +220,7 @@ const main = async () => {
     status: 'published',
   })
 
-  const facility = await upsertBySlug(payload, 'facilities', 'infinity-pool', {
+  await upsertBySlug(payload, 'facilities', 'infinity-pool', {
     title: 'Infinity Pool',
     slug: 'infinity-pool',
     shortDescription: 'A relaxed pool area overlooking the island.',
@@ -267,7 +267,7 @@ const main = async () => {
     status: 'published',
   })
 
-  const galleryItem = await upsertByTitle(payload, 'gallery', 'Resort View', {
+  await upsertByTitle(payload, 'gallery', 'Resort View', {
     title: 'Resort View',
     image: image.id,
     alt: 'Resort gallery placeholder',
@@ -278,7 +278,7 @@ const main = async () => {
     status: 'published',
   })
 
-  const promotion = await upsertBySlug(payload, 'promotions', 'stay-longer-save-more', {
+  await upsertBySlug(payload, 'promotions', 'stay-longer-save-more', {
     title: 'Stay Longer, Save More',
     slug: 'stay-longer-save-more',
     shortDescription: 'A simple development promotion for CMS preview.',
@@ -329,6 +329,8 @@ const main = async () => {
     slug: 'home-page',
     data: {
       hero: {
+        sectionName: 'Hero',
+        eyebrow: 'Welcome to Sanctuary',
         heading: 'Island Villa Stay',
         description: 'A calm CMS-managed home page hero.',
         backgroundImage: image.id,
@@ -336,50 +338,80 @@ const main = async () => {
         secondaryCTA: { label: 'Contact Us', url: '/contact', openInNewTab: false, variant: 'secondary' },
         overlayIntensity: 40,
         active: true,
-        sortOrder: 0,
+        sortOrder: 1,
       },
-      featuredRooms: {
-        heading: 'Featured Rooms',
-        selectedRooms: [room.id],
+      bookingPreview: {
+        sectionName: 'Booking Preview Bar',
+        sectionAriaLabel: 'Booking preview',
+        formAriaLabel: 'Availability search',
+        checkInLabel: 'Check-in',
+        checkOutLabel: 'Check-out',
+        guestsLabel: 'Guests',
+        promotionLinkLabel: 'Have a promotion code?',
+        promotionLinkURL: '/reservation',
+        submitButtonLabel: 'Check Availability',
+        submitButtonURL: '/reservation',
         active: true,
         sortOrder: 2,
       },
-      facilitiesOverview: {
-        heading: 'Facilities',
-        selectedFacilities: [facility.id],
+      introduction: {
+        sectionName: 'Ocean-side Comfort Intro',
+        eyebrow: 'Welcome to Sanctuary',
+        heading: 'Ocean-side comfort, warm villa lights, and slow island mornings in Nusa Ceningan.',
+        description: 'A calm CMS-managed introduction for the Home page.',
+        image: image.id,
         active: true,
         sortOrder: 3,
       },
       signatureExperiences: {
+        sectionName: 'Signature Experiences',
+        eyebrow: 'Curated Moments',
         heading: 'Signature Experiences',
+        description: 'Curated moments shaped around your stay.',
         selectedServices: [service.id],
+        button: { label: 'All Signature Service', url: '/services', openInNewTab: false, variant: 'text' },
         active: true,
         sortOrder: 4,
       },
-      galleryPreview: {
-        heading: 'Gallery',
-        selectedGalleryItems: [galleryItem.id],
+      typeOfRooms: {
+        sectionName: 'Type of Room',
+        eyebrow: 'Discover our rooms',
+        heading: 'Luxury Interior',
+        description: 'Choose your island sanctuary.',
+        selectedRooms: [room.id],
         active: true,
         sortOrder: 5,
       },
-      promotionSection: {
-        heading: 'Promotions',
-        selectedPromotions: [promotion.id],
+      testimonialNote: {
+        sectionName: 'Testimonial',
+        note:
+          'Frontend testimonial section is intentionally not editable from CMS yet. It will be connected later to Google Reviews or another review platform.',
         active: true,
         sortOrder: 6,
       },
       journalPreview: {
-        heading: 'Journal',
+        sectionName: 'Latest Journal Preview',
+        eyebrow: 'Explore',
+        heading: 'Latest from our blog',
+        description: 'Travel notes, villa rituals, and island stories.',
         selectedArticles: [article.id],
-        cta: { label: 'Read Stories', url: '/blog', openInNewTab: false, variant: 'text' },
+        button: { label: 'View All Journal', url: '/blog', openInNewTab: false, variant: 'text' },
         active: true,
         sortOrder: 7,
       },
-      finalCTA: {
-        heading: 'Plan Your Stay',
-        buttonLabel: 'Contact Us',
-        buttonURL: '/contact',
-        backgroundImage: image.id,
+      contactPreview: {
+        sectionName: 'Contact Us Preview',
+        eyebrow: 'Information',
+        heading: 'Contact us',
+        description: 'Set in the rhythm of Nusa Ceningan, close enough to island life and quiet enough to fully slow down.',
+        locationHeading: 'Bali, Indonesia',
+        address: 'Nusa Ceningan, Bali, Indonesia',
+        emailLabel: 'Email:',
+        email: 'hello@example.com',
+        phoneLabel: 'Call directly:',
+        phone: '+62 823 8635 7012',
+        mapEmbedURL:
+          'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4105.109823280101!2d115.44396114160823!3d-8.700121381626033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sid',
         active: true,
         sortOrder: 8,
       },
@@ -389,19 +421,49 @@ const main = async () => {
   await payload.updateGlobal({
     slug: 'rooms-page',
     data: {
-      heroEyebrow: 'Rooms',
-      heroHeading: 'Our Rooms',
-      heroDescription: 'Discover a collection of curated island sanctuaries designed for deep rest and quiet elegance.',
-      heroImage: image.id,
-      introHeading: 'Signature Collection',
-      introDescription: 'Stay where island calm meets personal villa comfort.',
-      listingHeading: 'Stay where island calm meets personal villa comfort.',
-      listingDescription: 'Choose the room style that best matches your stay rhythm.',
-      listingCTA: {
-        label: 'Start Reservation',
-        url: '/reservation',
-        openInNewTab: false,
-        variant: 'primary',
+      hero: {
+        sectionName: 'Hero',
+        heading: 'Our Rooms',
+        description: 'Discover a collection of curated island sanctuaries designed for deep rest and quiet elegance.',
+        image: image.id,
+        active: true,
+        sortOrder: 1,
+      },
+      availabilityBar: {
+        sectionName: 'Availability Bar',
+        sectionAriaLabel: 'Booking preview',
+        formAriaLabel: 'Availability search',
+        checkInLabel: 'Check-in',
+        checkOutLabel: 'Check-out',
+        guestsLabel: 'Guests',
+        promotionLinkLabel: 'Have a promotion code?',
+        promotionLinkURL: '/reservation',
+        submitButtonLabel: 'Check Availability',
+        submitButtonURL: '/reservation',
+        active: true,
+        sortOrder: 2,
+      },
+      roomCollection: {
+        sectionName: 'Type of Room',
+        eyebrow: 'Signature Collection',
+        heading: 'Stay where island calm meets personal villa comfort.',
+        description: 'Choose the room style that best matches your stay rhythm.',
+        ratingSymbol: '* * * * *',
+        startFromLabel: 'Start from',
+        nightSuffixLabel: '/ night',
+        statusLabel: 'Status',
+        depositLabel: 'Deposit',
+        bedsLabel: 'Beds',
+        passengerLabel: 'Passenger',
+        detailButtonLabel: 'View Detail',
+        button: {
+          label: 'Start Reservation',
+          url: '/reservation',
+          openInNewTab: false,
+          variant: 'primary',
+        },
+        active: true,
+        sortOrder: 3,
       },
       seo: {
         metaTitle: 'Rooms and Suites',
@@ -459,12 +521,58 @@ const main = async () => {
   await payload.updateGlobal({
     slug: 'about-page',
     data: {
-      heroHeading: 'About Villa Resort',
-      heroDescription: 'Editable about page content for the public website.',
-      heroImage: image.id,
-      supportingImages: [{ image: image.id, alt: 'About page placeholder' }],
-      values: [{ title: 'Calm hospitality', description: 'Warm service and thoughtful details.' }],
-      finalCTA: { label: 'Contact Us', url: '/contact', openInNewTab: false, variant: 'primary' },
+      hero: {
+        sectionName: 'Hero',
+        eyebrow: 'Est. island mornings',
+        heading: 'About Villa Resort',
+        description: 'Editable about page content for the public website.',
+        image: image.id,
+        scrollCueLabel: 'Scroll to our story',
+        active: true,
+        sortOrder: 1,
+      },
+      story: {
+        sectionName: 'Our Story',
+        eyebrow: 'Nusa Ceningan, Bali',
+        heading: 'Our Story',
+        paragraphs: [{ text: 'Warm service and thoughtful details shape every Villa Ceningan stay.' }],
+        image: image.id,
+        active: true,
+        sortOrder: 2,
+      },
+      principles: {
+        sectionName: 'Principles',
+        eyebrow: 'Sustainable Luxury',
+        heading: 'Luxury is a responsibility.',
+        description: 'Our commitment is woven into details guests can feel: calm spaces, local care, and less excess.',
+        items: [{ title: 'Calm hospitality', description: 'Warm service and thoughtful details.', image: image.id }],
+        active: true,
+        sortOrder: 3,
+      },
+      team: {
+        sectionName: 'Team',
+        heading: 'The Stewards of Villa Ceningan',
+        quote:
+          'We do not design hospitality around noise. We design it around attention, timing, and small comforts that make guests feel expected.',
+        members: [
+          {
+            name: 'Villa Ceningan Team',
+            role: 'Guest Experience',
+            description: 'Preparing daily details, stay requests, and WhatsApp support before guests need to ask.',
+            image: image.id,
+          },
+        ],
+        active: true,
+        sortOrder: 4,
+      },
+      finalCTA: {
+        sectionName: 'Final CTA',
+        heading: 'Reconnect with your island rhythm.',
+        image: image.id,
+        button: { label: 'Contact Us', url: '/contact', openInNewTab: false, variant: 'primary' },
+        active: true,
+        sortOrder: 5,
+      },
     },
   })
 
