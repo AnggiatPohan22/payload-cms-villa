@@ -1606,19 +1606,67 @@ export interface RoomsPage {
  */
 export interface ServicesPage {
   id: number;
-  heroEyebrow?: string | null;
-  heroHeading: string;
-  heroDescription?: string | null;
-  heroImage?: (number | null) | Media;
-  introHeading?: string | null;
-  introDescription?: string | null;
-  listingHeading?: string | null;
-  listingDescription?: string | null;
+  hero: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading: string;
+    description?: string | null;
+    image?: (number | null) | Media;
+    scrollCueLabel?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  intro?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  signatureServices?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    ariaLabel?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  tailoredMoment?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    metaLabelOne?: string | null;
+    metaLabelTwo?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
   finalCTA?: {
-    label?: string | null;
-    url?: string | null;
-    openInNewTab?: boolean | null;
-    variant?: ('primary' | 'secondary' | 'text') | null;
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    primary?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    secondary?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    active?: boolean | null;
+    sortOrder?: number | null;
   };
   seo?: {
     metaTitle?: string | null;
@@ -1638,28 +1686,96 @@ export interface ServicesPage {
  */
 export interface ContactPage {
   id: number;
-  heroHeading: string;
-  heroDescription?: string | null;
-  heroImage?: (number | null) | Media;
-  contactHeading?: string | null;
-  contactDescription?: string | null;
-  phone?: string | null;
-  email?: string | null;
-  whatsApp?: string | null;
-  address?: string | null;
-  mapEmbedURL?: string | null;
-  operationalHours?:
-    | {
-        label?: string | null;
-        hours?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  finalCTA?: {
-    label?: string | null;
-    url?: string | null;
-    openInNewTab?: boolean | null;
-    variant?: ('primary' | 'secondary' | 'text') | null;
+  hero: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading: string;
+    description?: string | null;
+    image?: (number | null) | Media;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  contactInquiry?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    locationLabel?: string | null;
+    locationText?: string | null;
+    whatsAppLabel?: string | null;
+    whatsAppText?: string | null;
+    emailLabel?: string | null;
+    emailText?: string | null;
+    conciergeAriaLabel?: string | null;
+    conciergeHeading?: string | null;
+    button?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    phone?: string | null;
+    email?: string | null;
+    whatsApp?: string | null;
+    address?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  contactForm?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    ariaLabel?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    nameLabel?: string | null;
+    namePlaceholder?: string | null;
+    emailLabel?: string | null;
+    emailPlaceholder?: string | null;
+    subjectLabel?: string | null;
+    subjectOptionOne?: string | null;
+    subjectOptionTwo?: string | null;
+    subjectOptionThree?: string | null;
+    subjectOptionFour?: string | null;
+    messageLabel?: string | null;
+    messagePlaceholder?: string | null;
+    submitButtonLabel?: string | null;
+    submittingButtonLabel?: string | null;
+    whatsAppMessageIntro?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  mapSection?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    heading?: string | null;
+    description?: string | null;
+    locationHeading?: string | null;
+    mapTitle?: string | null;
+    mapEmbedURL?: string | null;
+    button?: {
+      label?: string | null;
+      url?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    active?: boolean | null;
+    sortOrder?: number | null;
+  };
+  quote?: {
+    /**
+     * Editable admin label. Keep this aligned with the actual frontend section purpose.
+     */
+    sectionName?: string | null;
+    ariaLabel?: string | null;
+    text?: string | null;
+    active?: boolean | null;
+    sortOrder?: number | null;
   };
   seo?: {
     metaTitle?: string | null;
@@ -2326,21 +2442,66 @@ export interface RoomsPageSelect<T extends boolean = true> {
  * via the `definition` "services-page_select".
  */
 export interface ServicesPageSelect<T extends boolean = true> {
-  heroEyebrow?: T;
-  heroHeading?: T;
-  heroDescription?: T;
-  heroImage?: T;
-  introHeading?: T;
-  introDescription?: T;
-  listingHeading?: T;
-  listingDescription?: T;
+  hero?:
+    | T
+    | {
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        image?: T;
+        scrollCueLabel?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  intro?:
+    | T
+    | {
+        sectionName?: T;
+        eyebrow?: T;
+        heading?: T;
+        description?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  signatureServices?:
+    | T
+    | {
+        sectionName?: T;
+        ariaLabel?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  tailoredMoment?:
+    | T
+    | {
+        sectionName?: T;
+        metaLabelOne?: T;
+        metaLabelTwo?: T;
+        active?: T;
+        sortOrder?: T;
+      };
   finalCTA?:
     | T
     | {
-        label?: T;
-        url?: T;
-        openInNewTab?: T;
-        variant?: T;
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        primary?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+            };
+        secondary?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+            };
+        active?: T;
+        sortOrder?: T;
       };
   seo?:
     | T
@@ -2362,30 +2523,95 @@ export interface ServicesPageSelect<T extends boolean = true> {
  * via the `definition` "contact-page_select".
  */
 export interface ContactPageSelect<T extends boolean = true> {
-  heroHeading?: T;
-  heroDescription?: T;
-  heroImage?: T;
-  contactHeading?: T;
-  contactDescription?: T;
-  phone?: T;
-  email?: T;
-  whatsApp?: T;
-  address?: T;
-  mapEmbedURL?: T;
-  operationalHours?:
+  hero?:
     | T
     | {
-        label?: T;
-        hours?: T;
-        id?: T;
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        image?: T;
+        active?: T;
+        sortOrder?: T;
       };
-  finalCTA?:
+  contactInquiry?:
     | T
     | {
-        label?: T;
-        url?: T;
-        openInNewTab?: T;
-        variant?: T;
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        locationLabel?: T;
+        locationText?: T;
+        whatsAppLabel?: T;
+        whatsAppText?: T;
+        emailLabel?: T;
+        emailText?: T;
+        conciergeAriaLabel?: T;
+        conciergeHeading?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+            };
+        phone?: T;
+        email?: T;
+        whatsApp?: T;
+        address?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  contactForm?:
+    | T
+    | {
+        sectionName?: T;
+        ariaLabel?: T;
+        heading?: T;
+        description?: T;
+        nameLabel?: T;
+        namePlaceholder?: T;
+        emailLabel?: T;
+        emailPlaceholder?: T;
+        subjectLabel?: T;
+        subjectOptionOne?: T;
+        subjectOptionTwo?: T;
+        subjectOptionThree?: T;
+        subjectOptionFour?: T;
+        messageLabel?: T;
+        messagePlaceholder?: T;
+        submitButtonLabel?: T;
+        submittingButtonLabel?: T;
+        whatsAppMessageIntro?: T;
+        active?: T;
+        sortOrder?: T;
+      };
+  mapSection?:
+    | T
+    | {
+        sectionName?: T;
+        heading?: T;
+        description?: T;
+        locationHeading?: T;
+        mapTitle?: T;
+        mapEmbedURL?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              openInNewTab?: T;
+            };
+        active?: T;
+        sortOrder?: T;
+      };
+  quote?:
+    | T
+    | {
+        sectionName?: T;
+        ariaLabel?: T;
+        text?: T;
+        active?: T;
+        sortOrder?: T;
       };
   seo?:
     | T

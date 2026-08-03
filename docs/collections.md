@@ -83,6 +83,26 @@ Rooms Page global now mirrors `/rooms` frontend section order:
 
 Do not re-add legacy flat fields such as `heroHeading`, `introHeading`, `listingCTA`, `values`, or About supporting image fields to the admin UI. They are retained only as mapper fallback while older content is migrated.
 
+## Phase 7.9 Services and Contact Page Cleanup Rules
+
+Services Page global now mirrors `/services` frontend section order:
+
+- `hero`: hero heading, description, image, and scroll cue label.
+- `intro`: eyebrow, quoted intro heading, and intro description.
+- `signatureServices`: editable aria label for the services list section.
+- `tailoredMoment`: editable meta labels for the featured transit/tailored moment section.
+- `finalCTA`: actual CTA section with heading, description, primary button, and secondary button.
+
+Contact Page global now mirrors `/contact` frontend section order:
+
+- `hero`: hero heading, description, and image.
+- `contactInquiry`: contact methods, concierge copy/button, phone, email, WhatsApp, and address values.
+- `contactForm`: form heading, description, labels, placeholders, subject options, submit states, and WhatsApp message intro.
+- `mapSection`: map section heading, description, location heading, iframe title, map URL, and button.
+- `quote`: final quote aria label and quote text.
+
+Services and Contact use simple `button` groups for normal links. These buttons expose label, URL, and open-in-new-tab behavior without style variants to keep migration names short and avoid unnecessary enum churn.
+
 Admin sidebar groups now use:
 
 - `Pages`: fixed page Globals.

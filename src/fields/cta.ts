@@ -1,7 +1,8 @@
 import type { Field } from 'payload'
 
-export const ctaFields = (name = 'cta'): Field => ({
+export const ctaFields = (name = 'cta', dbName?: string): Field => ({
   name,
+  ...(dbName ? { dbName } : {}),
   type: 'group',
   fields: [
     {

@@ -88,4 +88,10 @@ Phase 7.8 applies the same rule to About and Rooms:
 - Normal navigation links inside sections use `button`; only actual CTA sections use CTA naming.
 - Legacy flat fields are fallback only and should not be reintroduced to the admin interface.
 
+Phase 7.9 applies the same rule to Services and Contact:
+
+- `/services` reads `services-page` groups: `hero`, `intro`, `signatureServices`, `tailoredMoment`, and `finalCTA`.
+- `/contact` reads `contact-page` groups: `hero`, `contactInquiry`, `contactForm`, `mapSection`, and `quote`.
+- Contact form labels/placeholders/options and Services CTA buttons are staff-editable from CMS.
+
 The current frontend branch `phase-6-cms-integration` keeps fallback data in place and prefers CMS only when the Global is published and structurally valid.
